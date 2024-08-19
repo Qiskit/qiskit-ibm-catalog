@@ -1,0 +1,17 @@
+{
+    "dependencies_files": [],
+    "language": {
+        "name": "python",
+        "versions": ["3.9"]
+    },
+    "tests_command": [
+        "python -m pytest -v --doctest-modules"
+    ],
+    "styles_check_command": [
+        "pylint -rn qiskit_ibm_catalog tests"
+    ],
+    "coverages_check_command": [
+        "coverage3 run --source qiskit_ibm_catalog --parallel-mode -m pytest --doctest-modules",
+        "coverage3 combine"
+    ]
+}
