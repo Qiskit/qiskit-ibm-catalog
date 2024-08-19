@@ -1,0 +1,33 @@
+﻿qiskit\_ibm\_catalog.catalog.QiskitFunctionsCatalog
+===================================================
+
+.. currentmodule:: qiskit_ibm_catalog.catalog
+
+.. autoclass:: QiskitFunctionsCatalog
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~QiskitFunctionsCatalog.__init__
+      ~QiskitFunctionsCatalog.get_job_by_id
+      ~QiskitFunctionsCatalog.jobs
+      ~QiskitFunctionsCatalog.list
+      ~QiskitFunctionsCatalog.load
+      ~QiskitFunctionsCatalog.save_account
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~QiskitFunctionsCatalog.PRE_FILTER_KEYWORD
+   
+   
