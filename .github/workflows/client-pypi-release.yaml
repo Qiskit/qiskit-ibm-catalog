@@ -22,7 +22,6 @@ jobs:
         run: pip install -U twine==5.1.1 wheel==0.44.0
       - name: Build Artifacts
         run: |
-          cd client
           python setup.py sdist
           python setup.py bdist_wheel
         shell: bash
