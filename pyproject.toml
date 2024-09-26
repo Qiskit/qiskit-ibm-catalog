@@ -6,7 +6,7 @@ dynamic = [
     "version",
 ]
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 license = {file = "LICENSE.txt"}
 description = ""
 authors = []
@@ -14,7 +14,7 @@ authors = []
 dependencies = [
     "certifi>=2021.5.30",
     "importlib_metadata>=4.8.1",
-    "qiskit_serverless>=0.14.2",
+    "qiskit_serverless>=0.17.0",
 ]
 
 [project.optional-dependencies]
