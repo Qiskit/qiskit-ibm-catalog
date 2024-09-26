@@ -58,3 +58,6 @@ py-modules = []
 [tool.setuptools.packages.find]
 include = ['qiskit_ibm_catalog*']
 exclude = ['qiskit_ibm_catalog*tests']
+
+[tool.setuptools.dynamic]
+version = { file = "qiskit_ibm_catalog/VERSION.txt" }
