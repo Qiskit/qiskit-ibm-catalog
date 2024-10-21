@@ -22,6 +22,7 @@
 from __future__ import annotations
 
 from typing import Optional, List
+import warnings
 
 from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_serverless.core.client import IBMServerlessClient
@@ -116,7 +117,7 @@ class QiskitServerless:
             **{**kwargs, **{"filter": self.PRE_FILTER_KEYWORD}}
         )
 
-    def get_job_by_id(self, job_id: str) -> Optional[Job]:
+    def job(self, job_id: str) -> Optional[Job]:
         """Returns job by id.
 
         Args:
@@ -126,6 +127,23 @@ class QiskitServerless:
             Job: Job
         """
         return self._client.get_job_by_id(job_id=job_id)
+
+    def get_job_by_id(self, job_id: str) -> Optional[Job]:
+        """Returns job by id.
+
+        Args:
+            job_id (str): job id
+
+        Returns:
+            Job: Job
+        """
+        warnings.warn(
+            "`get_job_by_id` method has been deprecated. "
+            "And will be removed in future releases. "
+            "Please, use `job` instead.",
+            DeprecationWarning,
+        )
+        return self.job(job_id=job_id)
 
     def __repr__(self) -> str:
         return "<QiskitServerless>"
