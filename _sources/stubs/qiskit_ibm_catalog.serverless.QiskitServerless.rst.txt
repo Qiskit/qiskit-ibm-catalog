@@ -15,6 +15,7 @@
    
       ~QiskitServerless.__init__
       ~QiskitServerless.get_job_by_id
+      ~QiskitServerless.job
       ~QiskitServerless.jobs
       ~QiskitServerless.list
       ~QiskitServerless.load

@@ -15,6 +15,7 @@
    
       ~QiskitFunctionsCatalog.__init__
       ~QiskitFunctionsCatalog.get_job_by_id
+      ~QiskitFunctionsCatalog.job
       ~QiskitFunctionsCatalog.jobs
       ~QiskitFunctionsCatalog.list
       ~QiskitFunctionsCatalog.load
