@@ -25,9 +25,9 @@ from typing import Optional, List
 import warnings
 
 from qiskit_ibm_runtime import QiskitRuntimeService
-from qiskit_serverless.core.client import IBMServerlessClient
-from qiskit_serverless.core.function import QiskitFunction
-from qiskit_serverless.core.job import Job
+from qiskit_serverless import IBMServerlessClient
+from qiskit_serverless.core import Job, QiskitFunction
+from qiskit_serverless.core.function import RunnableQiskitFunction
 
 
 class QiskitServerless:
@@ -70,7 +70,7 @@ class QiskitServerless:
         """
         self._client = IBMServerlessClient(token=token, name=name)
 
-    def upload(self, function: QiskitFunction) -> QiskitFunction:
+    def upload(self, function: QiskitFunction) -> RunnableQiskitFunction:
         """Uploads qiskit function.
 
         Args:
@@ -79,15 +79,11 @@ class QiskitServerless:
         Returns:
             QiskitFunction: uploaded qiskit function
         """
-        title = self._client.upload(function)
-        return QiskitFunction(
-            title,
-            job_client=self._client._job_client,  # pylint: disable=protected-access
-        )
+        return self._client.upload(function)
 
     def load(
         self, title: str, provider: Optional[str] = None
-    ) -> Optional[QiskitFunction]:
+    ) -> Optional[RunnableQiskitFunction]:
         """Loads qiskit function by title.
 
         Args:
@@ -97,7 +93,7 @@ class QiskitServerless:
         Returns:
             Optional[QiskitFunction]: qiskit function
         """
-        return self._client.get(title=title, provider=provider)
+        return self._client.function(title=title, provider=provider)
 
     def list(self, **kwargs) -> List[QiskitFunction]:
         """Returns list of functions uploaded by user.
@@ -105,7 +101,9 @@ class QiskitServerless:
         Returns:
             List[QiskitFunction]: list of functions.
         """
-        return self._client.list(**{**kwargs, **{"filter": self.PRE_FILTER_KEYWORD}})
+        return self._client.functions(
+            **{**kwargs, **{"filter": self.PRE_FILTER_KEYWORD}}
+        )
 
     def jobs(self, **kwargs) -> List[Job]:
         """Returns list of jobs.
@@ -113,9 +111,7 @@ class QiskitServerless:
         Returns:
             List[Job]: jobs
         """
-        return self._client.get_jobs(
-            **{**kwargs, **{"filter": self.PRE_FILTER_KEYWORD}}
-        )
+        return self._client.jobs(**{**kwargs, **{"filter": self.PRE_FILTER_KEYWORD}})
 
     def job(self, job_id: str) -> Optional[Job]:
         """Returns job by id.
@@ -126,7 +122,7 @@ class QiskitServerless:
         Returns:
             Job: Job
         """
-        return self._client.get_job_by_id(job_id=job_id)
+        return self._client.job(job_id=job_id)
 
     def get_job_by_id(self, job_id: str) -> Optional[Job]:
         """Returns job by id.
