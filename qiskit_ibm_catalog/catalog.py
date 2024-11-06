@@ -24,9 +24,9 @@ from typing import Optional, List
 import warnings
 
 from qiskit_ibm_runtime import QiskitRuntimeService
-from qiskit_serverless.core.client import IBMServerlessClient
-from qiskit_serverless.core.function import QiskitFunction
-from qiskit_serverless.core.job import Job
+from qiskit_serverless import IBMServerlessClient
+from qiskit_serverless.core import Job, QiskitFunction
+from qiskit_serverless.core.function import RunnableQiskitFunction
 
 
 class QiskitFunctionsCatalog:
@@ -71,7 +71,7 @@ class QiskitFunctionsCatalog:
 
     def load(
         self, title: str, provider: Optional[str] = None
-    ) -> Optional[QiskitFunction]:
+    ) -> Optional[RunnableQiskitFunction]:
         """Loads Qiskit function by title
 
         Args:
@@ -81,7 +81,7 @@ class QiskitFunctionsCatalog:
         Returns:
             Optional[QiskitFunction]: qiskit function
         """
-        return self._client.get(title=title, provider=provider)
+        return self._client.function(title=title, provider=provider)
 
     def list(self, **kwargs) -> List[QiskitFunction]:
         """Returns a list of available qiskit functions in catalog.
@@ -89,7 +89,9 @@ class QiskitFunctionsCatalog:
         Returns:
             List[QiskitFunction]: list of qiskit functions
         """
-        return self._client.list(**{**kwargs, **{"filter": self.PRE_FILTER_KEYWORD}})
+        return self._client.functions(
+            **{**kwargs, **{"filter": self.PRE_FILTER_KEYWORD}}
+        )
 
     def jobs(self, **kwargs) -> List[Job]:
         """Returns list of jobs.
@@ -97,9 +99,7 @@ class QiskitFunctionsCatalog:
         Returns:
             List[Job]: jobs
         """
-        return self._client.get_jobs(
-            **{**kwargs, **{"filter": self.PRE_FILTER_KEYWORD}}
-        )
+        return self._client.jobs(**{**kwargs, **{"filter": self.PRE_FILTER_KEYWORD}})
 
     def job(self, job_id: str) -> Optional[Job]:
         """Returns job by id.
@@ -110,7 +110,7 @@ class QiskitFunctionsCatalog:
         Returns:
             Job: job
         """
-        return self._client.get_job_by_id(job_id=job_id)
+        return self._client.job(job_id=job_id)
 
     def get_job_by_id(self, job_id: str) -> Optional[Job]:
         """Returns job by id.
@@ -128,6 +128,30 @@ class QiskitFunctionsCatalog:
             DeprecationWarning,
         )
         return self.job(job_id=job_id)
+
+    def files(self, provider: Optional[str] = None) -> List[str]:
+        """Returns list of available files produced by programs to download."""
+        return self._client.files(provider)
+
+    def file_download(
+        self,
+        file: str,
+        target_name: Optional[str] = None,
+        download_location: str = "./",
+        provider: Optional[str] = None,
+    ):
+        """Download file."""
+        return self._client.file_download(
+            file, target_name, download_location, provider
+        )
+
+    def file_delete(self, file: str, provider: Optional[str] = None):
+        """Deletes file uploaded or produced by the programs,"""
+        return self._client.file_delete(file, provider)
+
+    def file_upload(self, file: str, provider: Optional[str] = None):
+        """Upload file."""
+        return self._client.file_upload(file, provider)
 
     def __repr__(self) -> str:
         return "<QiskitFunctionsCatalog>"
