@@ -141,6 +141,30 @@ class QiskitServerless:
         )
         return self.job(job_id=job_id)
 
+    def files(self, provider: Optional[str] = None) -> List[str]:
+        """Returns list of available files produced by programs to download."""
+        return self._client.files(provider)
+
+    def file_download(
+        self,
+        file: str,
+        target_name: Optional[str] = None,
+        download_location: str = "./",
+        provider: Optional[str] = None,
+    ):
+        """Download file."""
+        return self._client.file_download(
+            file, target_name, download_location, provider
+        )
+
+    def file_delete(self, file: str, provider: Optional[str] = None):
+        """Deletes file uploaded or produced by the programs,"""
+        return self._client.file_delete(file, provider)
+
+    def file_upload(self, file: str, provider: Optional[str] = None):
+        """Upload file."""
+        return self._client.file_upload(file, provider)
+
     def __repr__(self) -> str:
         return "<QiskitServerless>"
 
