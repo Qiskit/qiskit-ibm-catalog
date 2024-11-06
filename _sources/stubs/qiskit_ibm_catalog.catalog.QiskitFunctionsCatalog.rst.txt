@@ -14,6 +14,10 @@
    .. autosummary::
    
       ~QiskitFunctionsCatalog.__init__
+      ~QiskitFunctionsCatalog.file_delete
+      ~QiskitFunctionsCatalog.file_download
+      ~QiskitFunctionsCatalog.file_upload
+      ~QiskitFunctionsCatalog.files
       ~QiskitFunctionsCatalog.get_job_by_id
       ~QiskitFunctionsCatalog.job
       ~QiskitFunctionsCatalog.jobs

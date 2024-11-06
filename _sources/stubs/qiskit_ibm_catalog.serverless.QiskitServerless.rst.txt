@@ -14,6 +14,10 @@
    .. autosummary::
    
       ~QiskitServerless.__init__
+      ~QiskitServerless.file_delete
+      ~QiskitServerless.file_download
+      ~QiskitServerless.file_upload
+      ~QiskitServerless.files
       ~QiskitServerless.get_job_by_id
       ~QiskitServerless.job
       ~QiskitServerless.jobs
