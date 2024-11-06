@@ -14,8 +14,8 @@
 
 from unittest import TestCase, mock
 
-from qiskit_serverless import IBMServerlessClient, QiskitFunction
-from qiskit_serverless.core.job import Job
+from qiskit_serverless import IBMServerlessClient
+from qiskit_serverless.core import Job, QiskitFunction
 from qiskit_ibm_catalog import QiskitServerless, QiskitFunctionsCatalog
 
 
@@ -24,13 +24,15 @@ class TestCatalog(TestCase):
 
     @mock.patch.object(
         IBMServerlessClient,
-        "list",
+        "functions",
         return_value=[QiskitFunction("the-ultimate-answer")],
     )
     @mock.patch.object(
-        IBMServerlessClient, "get_jobs", return_value=[Job("42", mock.MagicMock())]
+        IBMServerlessClient, "jobs", return_value=[Job("42", mock.MagicMock())]
     )
-    @mock.patch("qiskit_serverless.core.client.ServerlessClient._verify_token")
+    @mock.patch(
+        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_token"
+    )
     def test_basic_functions(self, _token_mock, jobs_mock, functions_list_mock):
         """Tests basic function of catalog."""
         catalog = QiskitFunctionsCatalog("token")
@@ -49,13 +51,15 @@ class TestServerless(TestCase):
 
     @mock.patch.object(
         IBMServerlessClient,
-        "list",
+        "functions",
         return_value=[QiskitFunction("the-ultimate-answer")],
     )
     @mock.patch.object(
-        IBMServerlessClient, "get_jobs", return_value=[Job("42", mock.MagicMock())]
+        IBMServerlessClient, "jobs", return_value=[Job("42", mock.MagicMock())]
     )
-    @mock.patch("qiskit_serverless.core.client.ServerlessClient._verify_token")
+    @mock.patch(
+        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_token"
+    )
     def test_basic_functions(self, _token_mock, jobs_mock, functions_list_mock):
         """Tests basic function of serverless client."""
         serverless = QiskitServerless("token")
