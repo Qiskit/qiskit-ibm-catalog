@@ -28,7 +28,7 @@ def hamsim_script(tmpdir, scope="module") -> str:
     script, script_info = ScriptExporter().from_filename(notebook_filename)
     script_name = script_info["metadata"]["name"]
     script_file = tmpdir / (script_name + script_info["output_extension"])
-    with script_file.open("w") as f:
+    with script_file.open("w", encoding="utf-8") as f:
         f.write(script)
     return str(script_file)
 
