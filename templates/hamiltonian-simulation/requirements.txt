@@ -1,0 +1,9 @@
+numpy
+qiskit[visualization]
+qiskit-ibm-runtime
+qiskit-addon-utils
+qiskit-addon-aqc-tensor[quimb-jax,notebook-dependencies]
+qiskit-serverless
+qiskit-ibm-catalog
+nbconvert
+mergedeep
