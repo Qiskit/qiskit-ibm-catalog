@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
+# mypy: ignore-errors
 
 # # Reducing the Trotter error of Hamiltonian dynamics with <span style="color:black">approximate quantum compilation</span>
 #
