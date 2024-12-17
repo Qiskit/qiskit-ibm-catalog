@@ -2,13 +2,13 @@
 # coding: utf-8
 
 # # Reducing the Trotter error of Hamiltonian dynamics with <span style="color:black">approximate quantum compilation</span>
-# 
+#
 # In this notebook, you will learn how to use **Approximate Quantum Compilation with Tensor Networks (AQC-Tensor)**.
-# 
+#
 # This notebook can be executed either directly or as a Qiskit Serverless program (see [accompanying notebook](serverless_demo.ipynb)).  In a few places it behaves differently based on how it is called (i.e., by branching on the value of `is_running_in_serverless()`).
-# 
+#
 # Our overall goal is to simulate time evolution of the above model Hamiltonian.  We do so by Trotter evolution, which we split into two portions:
-# 
+#
 # 1. An initial portion that is simulable with matrix product states (MPS).  We will "compile" this portion using AQC as presented in https://arxiv.org/abs/2301.08609.
 # 2. A subsequent portion of the circuit that will be executed only on hardware.
 
@@ -39,7 +39,7 @@ else:
 
 
 # ### Extract parameters from arguments
-# 
+#
 # We do this at the top of the notebook/program so we can fail early if any required arguments are missing.
 
 # In[2]:
@@ -75,9 +75,9 @@ if not 0.0 < aqc_stopping_fidelity <= 1.0:
 
 
 # ### Configure ``EstimatorOptions``, to control the parameters of our hardware experiment
-# 
-# For more information about the available execution options, see the [qiskit-ibm-runtime documentation](https://docs.quantum.ibm.com/api/qiskit-ibm-runtime/qiskit_ibm_runtime.options.EstimatorOptions). 
-# 
+#
+# For more information about the available execution options, see the [qiskit-ibm-runtime documentation](https://docs.quantum.ibm.com/api/qiskit-ibm-runtime/qiskit_ibm_runtime.options.EstimatorOptions).
+#
 # #### Set default options
 
 # In[4]:
@@ -127,7 +127,7 @@ if is_running_in_serverless():
 
 
 # ### Set up our Hamiltonian and observable
-# 
+#
 # If running as a Qiskit Serverless program, the user should have specified the Hamiltonian and observable, so we extract them from the arguments.
 
 # In[6]:
@@ -144,11 +144,11 @@ if is_running_in_serverless():
 
 
 # Otherwise, i.e., for the purposes of this notebook, we use the XXZ model on a chain with open boundary conditions:
-# 
+#
 # $$
 # \hat{\mathcal{H}}_{XXZ} = \sum_{i=1}^{L-1} J_{i,(i+1)}\left(X_i X_{(i+1)}+Y_i Y_{(i+1)}+ 2\cdot Z_i Z_{(i+1)} \right) \, ,
 # $$
-# 
+#
 # where $J_{i,(i+1)}$ is a random coefficient corresponding to edge $(i, i+1)$
 
 # In[7]:
@@ -221,7 +221,7 @@ if not is_running_in_serverless():
 
 
 # ### Construct the AQC target circuit
-# 
+#
 # Because this is being simulated by a tensor-network simulator, the number of layers affects execution time only by a constant factor, so we might as well use a generous number of layers to minimize Trotter error.
 
 # In[11]:
@@ -243,13 +243,13 @@ if aqc_evolution_time:
 
 
 # ### Generate an ansatz and initial parameters from a Trotter circuit with fewer steps
-# 
+#
 # First, we construct a "good" circuit that has the same evolution time as the target circuit, but with fewer Trotter steps (and thus fewer layers).
-# 
+#
 # Then we pass this "good" circuit to AQC-Tensor's `generate_ansatz_from_circuit` function.  This function analyzes the two-qubit connectivity of the circuit and returns two things:
 # 1. a general, parametrized ansatz circuit with the same two-qubit connectivity as the input circuit; and,
 # 2. parameters that, when plugged into the ansatz, yield the input (good) circuit.
-# 
+#
 # Soon we will take these parameters and iteratively adjust them to bring the ansatz circuit as close as possible to the target MPS.
 
 # In[12]:
@@ -277,7 +277,7 @@ output["num_aqc_parameters"] = len(aqc_initial_parameters)
 
 
 # ### Choose settings for tensor network simulation
-# 
+#
 # Here, we use Quimb's matrix-product state (MPS) circuit simulator, along with [jax](https://github.com/jax-ml/jax) for providing the gradient.
 
 # In[13]:
@@ -296,7 +296,7 @@ simulator_settings = QuimbSimulator(quimb.tensor.CircuitMPS, autodiff_backend="j
 
 
 # ### Construct matrix-product state representation of the AQC target state
-# 
+#
 # Next, we build a matrix-product representation of the state to be approximated by AQC.
 
 # In[14]:
@@ -310,7 +310,7 @@ output["target_bond_dimension"] = aqc_target_mps.psi.max_bond()
 
 
 # ### Calculate fidelity of ansatz circuit vs. the target state, before optimization
-# 
+#
 # We can calculate the fidelity ($|\langle \psi_1 | \psi_2 \rangle|^2$) of the state prepared by the ansatz circuit vs. the target state:
 
 # In[15]:
@@ -325,7 +325,7 @@ output["aqc_starting_fidelity"] = starting_fidelity
 
 
 # ### Optimize the parameters of the ansatz using MPS calculations
-# 
+#
 # Here, we minimize the simplest possible cost function, `OneMinusFidelity`, by using the L-BFGS optimizer from scipy.
 
 # In[16]:
@@ -378,7 +378,7 @@ output["aqc_final_parameters"] = list(aqc_final_parameters)
 
 
 # ### Construct optimized circuit for initial portion of time evolution
-# 
+#
 # At this point, it is only necessary to find the final parameters to the ansatz circuit.
 
 # In[18]:
@@ -416,7 +416,7 @@ if remainder_evolution_time:
 # ## Step 2: Transpile circuits into ISA Circuits
 
 # #### Transpile PUBs (circuits and observables) to match the backend ISA (Instruction Set Architecture)
-# By selecting `optimization_level=3`, the transpiler will choose a 1D chain of qubits which minimizes the noise affecting our circuit. Once we have converted our circuits into the format that the backend is prepared to accept, we will apply a complimentary transformation to our observables as well. 
+# By selecting `optimization_level=3`, the transpiler will choose a 1D chain of qubits which minimizes the noise affecting our circuit. Once we have converted our circuits into the format that the backend is prepared to accept, we will apply a complimentary transformation to our observables as well.
 
 # In[21]:
 
@@ -506,7 +506,7 @@ output["hw_expvals"] = hw_expvals[0]
 
 
 # ## Step 4: Report expectation value
-# 
+#
 # Now we can compare the expectation value with its exact result for the parameters if running this notebook directly.
 
 # In[26]:
@@ -526,4 +526,3 @@ if not is_running_in_serverless():
 
 if is_running_in_serverless():
     save_result(output)
-
