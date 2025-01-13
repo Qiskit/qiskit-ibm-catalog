@@ -145,9 +145,7 @@ class QiskitFunctionsCatalog:
         download_location: str = "./",
     ):
         """Download a file available to the user for the specific Qiskit Function."""
-        return self._client.download(
-            file, download_location, function, target_name
-        )
+        return self._client.download(file, download_location, function, target_name)
 
     def provider_file_download(
         self,
