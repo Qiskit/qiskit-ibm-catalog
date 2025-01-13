@@ -157,7 +157,9 @@ class QiskitServerless:
         download_location: str = "./",
     ):
         """Download a file available to the user for the specific Qiskit Function."""
-        return self._client.download(file, download_location, function, target_name)
+        return self._client.file_download(
+            file, function, target_name, download_location
+        )
 
     def provider_file_download(
         self,
@@ -167,25 +169,28 @@ class QiskitServerless:
         download_location: str = "./",
     ):
         """Download a file available to the provider for the specific Qiskit Function."""
-        return self._client.provider_download(
-            file, download_location, function, target_name
+        return self._client.provider_file_download(
+            file,
+            function,
+            target_name,
+            download_location,
         )
 
     def file_delete(self, file: str, function: QiskitFunction):
         """Deletes a file available to the user for the specific Qiskit Function."""
-        return self._client.delete(file, function)
+        return self._client.file_delete(file, function)
 
     def provider_file_delete(self, file: str, function: QiskitFunction):
         """Deletes a file available to the provider for the specific Qiskit Function."""
-        return self._client.provider_delete(file, function)
+        return self._client.provider_file_delete(file, function)
 
     def file_upload(self, file: str, function: QiskitFunction):
         """Uploads a file in the specific user's Qiskit Function folder."""
-        return self._client.upload(file, function)
+        return self._client.file_upload(file, function)
 
     def provider_file_upload(self, file: str, function: QiskitFunction):
         """Uploads a file in the specific provider's Qiskit Function folder."""
-        return self._client.provider_upload(file, function)
+        return self._client.provider_file_upload(file, function)
 
     def __repr__(self) -> str:
         return "<QiskitServerless>"
