@@ -141,29 +141,53 @@ class QiskitServerless:
         )
         return self.job(job_id=job_id)
 
-    def files(self, provider: Optional[str] = None) -> List[str]:
-        """Returns list of available files produced by programs to download."""
-        return self._client.files(provider)
+    def files(self, function: QiskitFunction) -> List[str]:
+        """Returns the list of files available for the user in the Qiskit Function folder."""
+        return self._client.files(function)
+
+    def provider_files(self, function: QiskitFunction) -> List[str]:
+        """Returns the list of files available for the provider in the Qiskit Function folder."""
+        return self._client.provider_files(function)
 
     def file_download(
         self,
         file: str,
+        function: QiskitFunction,
         target_name: Optional[str] = None,
         download_location: str = "./",
-        provider: Optional[str] = None,
     ):
-        """Download file."""
-        return self._client.file_download(
-            file, target_name, download_location, provider
+        """Download a file available to the user for the specific Qiskit Function."""
+        return self._client.download(
+            file, download_location, function, target_name
         )
 
-    def file_delete(self, file: str, provider: Optional[str] = None):
-        """Deletes file uploaded or produced by the programs,"""
-        return self._client.file_delete(file, provider)
+    def provider_file_download(
+        self,
+        file: str,
+        function: QiskitFunction,
+        target_name: Optional[str] = None,
+        download_location: str = "./",
+    ):
+        """Download a file available to the provider for the specific Qiskit Function."""
+        return self._client.provider_download(
+            file, download_location, function, target_name
+        )
 
-    def file_upload(self, file: str, provider: Optional[str] = None):
-        """Upload file."""
-        return self._client.file_upload(file, provider)
+    def file_delete(self, file: str, function: QiskitFunction):
+        """Deletes a file available to the user for the specific Qiskit Function."""
+        return self._client.delete(file, function)
+
+    def provider_file_delete(self, file: str, function: QiskitFunction):
+        """Deletes a file available to the provider for the specific Qiskit Function."""
+        return self._client.provider_delete(file, function)
+
+    def file_upload(self, file: str, function: QiskitFunction):
+        """Uploads a file in the specific user's Qiskit Function folder."""
+        return self._client.upload(file, function)
+
+    def provider_file_upload(self, file: str, function: QiskitFunction):
+        """Uploads a file in the specific provider's Qiskit Function folder."""
+        return self._client.provider_upload(file, function)
 
     def __repr__(self) -> str:
         return "<QiskitServerless>"
