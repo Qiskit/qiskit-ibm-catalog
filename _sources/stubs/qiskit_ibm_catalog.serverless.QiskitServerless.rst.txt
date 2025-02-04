@@ -23,6 +23,10 @@
       ~QiskitServerless.jobs
       ~QiskitServerless.list
       ~QiskitServerless.load
+      ~QiskitServerless.provider_file_delete
+      ~QiskitServerless.provider_file_download
+      ~QiskitServerless.provider_file_upload
+      ~QiskitServerless.provider_files
       ~QiskitServerless.save_account
       ~QiskitServerless.upload
    

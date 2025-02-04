@@ -23,6 +23,10 @@
       ~QiskitFunctionsCatalog.jobs
       ~QiskitFunctionsCatalog.list
       ~QiskitFunctionsCatalog.load
+      ~QiskitFunctionsCatalog.provider_file_delete
+      ~QiskitFunctionsCatalog.provider_file_download
+      ~QiskitFunctionsCatalog.provider_file_upload
+      ~QiskitFunctionsCatalog.provider_files
       ~QiskitFunctionsCatalog.save_account
    
    
