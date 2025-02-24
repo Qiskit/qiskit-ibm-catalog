@@ -101,6 +101,21 @@ class QiskitFunctionsCatalog:
         """
         return self._client.jobs(**{**kwargs, **{"filter": self.PRE_FILTER_KEYWORD}})
 
+    def provider_jobs(self, function: QiskitFunction, **kwargs) -> List[Job]:
+        """List of jobs created in this provider and function.
+
+        Args:
+            function: QiskitFunction
+            **kwargs: additional parameters for the request
+
+        Raises:
+            QiskitServerlessException: validation exception
+
+        Returns:
+            [Job] : list of jobs
+        """
+        return self._client.provider_jobs(function, **kwargs)
+
     def job(self, job_id: str) -> Optional[Job]:
         """Returns job by id.
 
