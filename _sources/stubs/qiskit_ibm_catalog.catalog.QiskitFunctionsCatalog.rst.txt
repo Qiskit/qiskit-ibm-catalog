@@ -27,6 +27,7 @@
       ~QiskitFunctionsCatalog.provider_file_download
       ~QiskitFunctionsCatalog.provider_file_upload
       ~QiskitFunctionsCatalog.provider_files
+      ~QiskitFunctionsCatalog.provider_jobs
       ~QiskitFunctionsCatalog.save_account
    
    

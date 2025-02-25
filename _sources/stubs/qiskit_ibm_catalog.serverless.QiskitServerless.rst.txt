@@ -27,6 +27,7 @@
       ~QiskitServerless.provider_file_download
       ~QiskitServerless.provider_file_upload
       ~QiskitServerless.provider_files
+      ~QiskitServerless.provider_jobs
       ~QiskitServerless.save_account
       ~QiskitServerless.upload
    
