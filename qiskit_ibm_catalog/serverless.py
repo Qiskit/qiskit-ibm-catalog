@@ -27,7 +27,9 @@ import warnings
 from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_serverless import IBMServerlessClient
 from qiskit_serverless.core import Job, QiskitFunction
+from qiskit_serverless.core.enums import Channel
 from qiskit_serverless.core.function import RunnableQiskitFunction
+from qiskit_serverless.exception import QiskitServerlessException
 
 
 class QiskitServerless:
@@ -54,7 +56,13 @@ class QiskitServerless:
 
     PRE_FILTER_KEYWORD: str = "serverless"
 
-    def __init__(self, token: Optional[str] = None, name: Optional[str] = None) -> None:
+    def __init__(
+        self,
+        channel: str = Channel.IBM_QUANTUM.value,
+        token: Optional[str] = None,
+        instance: Optional[str] = None,
+        name: Optional[str] = None,
+    ) -> None:
         """
         Initialize qiskit serverless client.
 
@@ -65,10 +73,14 @@ class QiskitServerless:
         be retrieved from the user's local IBM Quantum account config file.
 
         Args:
-            token: IBM quantum token
+            channel: identifies the method to use to authenticate the user
+            token: IBM quantum token or IBM Cloud Api Key
+            instance: IBM Cloud CRN
             name: Name of the account to load
         """
-        self._client = IBMServerlessClient(token=token, name=name)
+        self._client = IBMServerlessClient(
+            channel=channel, token=token, instance=instance, name=name
+        )
 
     def upload(self, function: QiskitFunction) -> RunnableQiskitFunction:
         """Uploads qiskit function.
@@ -212,7 +224,9 @@ class QiskitServerless:
 
     @staticmethod
     def save_account(
+        channel: str = Channel.IBM_QUANTUM.value,
         token: Optional[str] = None,
+        instance: Optional[str] = None,
         name: Optional[str] = None,
         overwrite: Optional[bool] = False,
     ) -> None:
@@ -220,8 +234,25 @@ class QiskitServerless:
         Save the account to disk for future use.
 
         Args:
+            channel: identifies the method to use to authenticate the user
             token: IBM Quantum API token
+            instance: IBM Cloud CRN
             name: Name of the account to save
             overwrite: ``True`` if the existing account is to be overwritten
         """
-        QiskitRuntimeService.save_account(token=token, name=name, overwrite=overwrite)
+
+        try:
+            channel_enum = Channel(channel)
+        except ValueError as error:
+            raise QiskitServerlessException(
+                "Your channel value is not correct. Use one of the available channels: "
+                f"{Channel.LOCAL.value}, {Channel.IBM_QUANTUM.value}, {Channel.IBM_CLOUD.value}"
+            ) from error
+
+        QiskitRuntimeService.save_account(
+            channel=channel_enum.value,
+            token=token,
+            instance=instance,
+            name=name,
+            overwrite=overwrite,
+        )
