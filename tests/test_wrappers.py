@@ -31,7 +31,7 @@ class TestCatalog(TestCase):
         IBMServerlessClient, "jobs", return_value=[Job("42", mock.MagicMock())]
     )
     @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_token"
+        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
     def test_basic_functions(self, _token_mock, jobs_mock, functions_list_mock):
         """Tests basic function of catalog."""
@@ -58,7 +58,7 @@ class TestServerless(TestCase):
         IBMServerlessClient, "jobs", return_value=[Job("42", mock.MagicMock())]
     )
     @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_token"
+        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
     def test_basic_functions(self, _token_mock, jobs_mock, functions_list_mock):
         """Tests basic function of serverless client."""
