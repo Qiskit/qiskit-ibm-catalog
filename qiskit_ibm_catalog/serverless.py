@@ -58,8 +58,8 @@ class QiskitServerless:
 
     def __init__(
         self,
-        channel: str = Channel.IBM_QUANTUM.value,
         token: Optional[str] = None,
+        channel: str = Channel.IBM_QUANTUM.value,
         instance: Optional[str] = None,
         name: Optional[str] = None,
     ) -> None:
@@ -224,8 +224,8 @@ class QiskitServerless:
 
     @staticmethod
     def save_account(
-        channel: str = Channel.IBM_QUANTUM.value,
         token: Optional[str] = None,
+        channel: str = Channel.IBM_QUANTUM.value,
         instance: Optional[str] = None,
         name: Optional[str] = None,
         overwrite: Optional[bool] = False,
@@ -234,8 +234,8 @@ class QiskitServerless:
         Save the account to disk for future use.
 
         Args:
-            channel: identifies the method to use to authenticate the user
             token: IBM Quantum API token
+            channel: identifies the method to use to authenticate the user
             instance: IBM Cloud CRN
             name: Name of the account to save
             overwrite: ``True`` if the existing account is to be overwritten
