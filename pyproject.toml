@@ -14,7 +14,7 @@ authors = []
 dependencies = [
     "certifi>=2021.5.30",
     "importlib_metadata>=4.8.1",
-    "qiskit_serverless @ git+https://github.com/Qiskit/qiskit-serverless.git@ibm-cloud-integration#subdirectory=client"
+    "qiskit_serverless @ git+https://github.com/Qiskit/qiskit-serverless.git@main#subdirectory=client"
 ]
 
 [project.optional-dependencies]
