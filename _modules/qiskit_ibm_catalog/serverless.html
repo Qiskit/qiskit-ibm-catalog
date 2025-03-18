@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.4.7 and Furo 2024.01.29 -->
-        <title>qiskit_ibm_catalog.serverless - Qiskit IBM Catalog client 0.4.0</title>
+        <title>qiskit_ibm_catalog.serverless - Qiskit IBM Catalog client 0.5.0</title>
       <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=3ee1c6c6" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/qiskit-sphinx-theme.css?v=fe84956c" />
@@ -143,7 +143,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">Qiskit IBM Catalog client 0.4.0</div></a>
+      <a href="../../index.html"><div class="brand">Qiskit IBM Catalog client 0.5.0</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -170,7 +170,7 @@
     </div>
   </a>
   
-  <span class="sidebar-brand-text">Qiskit IBM Catalog client 0.4.0</span>
+  <span class="sidebar-brand-text">Qiskit IBM Catalog client 0.5.0</span>
 </div><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
@@ -249,7 +249,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_ibm_runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">QiskitRuntimeService</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_serverless</span><span class="w"> </span><span class="kn">import</span> <span class="n">IBMServerlessClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_serverless.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Job</span><span class="p">,</span> <span class="n">QiskitFunction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_serverless.core.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">Channel</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_serverless.core.function</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunnableQiskitFunction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_serverless.exception</span><span class="w"> </span><span class="kn">import</span> <span class="n">QiskitServerlessException</span>
 
 
 <div class="viewcode-block" id="QiskitServerless">
@@ -280,7 +282,13 @@
 
 <div class="viewcode-block" id="QiskitServerless.__init__">
 <a class="viewcode-back" href="../../stubs/qiskit_ibm_catalog.serverless.QiskitServerless.html#qiskit_ibm_catalog.serverless.QiskitServerless.__init__">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Channel</span><span class="o">.</span><span class="n">IBM_QUANTUM</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="n">instance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize qiskit serverless client.</span>
 
@@ -291,10 +299,14 @@
 <span class="sd">        be retrieved from the user&#39;s local IBM Quantum account config file.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            token: IBM quantum token</span>
+<span class="sd">            channel: identifies the method to use to authenticate the user</span>
+<span class="sd">            token: IBM quantum token or IBM Cloud Api Key</span>
+<span class="sd">            instance: IBM Cloud CRN</span>
 <span class="sd">            name: Name of the account to load</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">IBMServerlessClient</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">IBMServerlessClient</span><span class="p">(</span>
+            <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span>
+        <span class="p">)</span></div>
 
 
     <span class="k">def</span><span class="w"> </span><span class="nf">upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RunnableQiskitFunction</span><span class="p">:</span>
@@ -440,6 +452,8 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">save_account</span><span class="p">(</span>
         <span class="n">token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Channel</span><span class="o">.</span><span class="n">IBM_QUANTUM</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="n">instance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">overwrite</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -448,10 +462,27 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            token: IBM Quantum API token</span>
+<span class="sd">            channel: identifies the method to use to authenticate the user</span>
+<span class="sd">            instance: IBM Cloud CRN</span>
 <span class="sd">            name: Name of the account to save</span>
 <span class="sd">            overwrite: ``True`` if the existing account is to be overwritten</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">QiskitRuntimeService</span><span class="o">.</span><span class="n">save_account</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span></div>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">channel_enum</span> <span class="o">=</span> <span class="n">Channel</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">QiskitServerlessException</span><span class="p">(</span>
+                <span class="s2">&quot;Your channel value is not correct. Use one of the available channels: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Channel</span><span class="o">.</span><span class="n">LOCAL</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">Channel</span><span class="o">.</span><span class="n">IBM_QUANTUM</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">Channel</span><span class="o">.</span><span class="n">IBM_CLOUD</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
+
+        <span class="n">QiskitRuntimeService</span><span class="o">.</span><span class="n">save_account</span><span class="p">(</span>
+            <span class="n">channel</span><span class="o">=</span><span class="n">channel_enum</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+            <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span>
+            <span class="n">instance</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span>
+        <span class="p">)</span></div>
 
 </pre></div>
         </article>
@@ -486,7 +517,7 @@
   </div>
 </div><script src="../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../_static/documentation_options.js?v=6c02275b"></script>
+    <script src="../../_static/documentation_options.js?v=1dd76d02"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/thebelab-helper.js"></script>
