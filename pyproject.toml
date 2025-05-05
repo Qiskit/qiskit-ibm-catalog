@@ -6,7 +6,7 @@ dynamic = [
     "version",
 ]
 readme = "README.md"
-requires-python = "==3.11"
+requires-python = "==3.11.*"
 license = {file = "LICENSE.txt"}
 description = ""
 authors = []
