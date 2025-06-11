@@ -23,9 +23,9 @@ jobs:
         python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
         include:
           - os: macos-latest
-            python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+            python-version: 3.11
           - os: windows-latest
-            python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+            python-version: 3.11
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
@@ -41,8 +41,8 @@ jobs:
         run: |
           sed -i.bak -E '/#.*CI:[[:space:]]*skip-next-line/I{N;d;}' tox.ini
           cat tox.ini
+      - name: Set tox environment name
+        id: toxenv
+        run: echo "TOXENV=py${{ matrix.python-version }}" | sed 's/\.//g' >> $GITHUB_ENV
       - name: Test using tox environment
-        shell: bash
-        run: |
-          pver=${{ matrix.python-version }}
-          tox -epy${pver/./}
+        run: tox -e $TOXENV
