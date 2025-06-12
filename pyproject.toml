@@ -32,4 +32,4 @@ exclude = ['qiskit_ibm_catalog*tests']
 
 [tool.setuptools.dynamic]
 version = { file = "qiskit_ibm_catalog/VERSION.txt" }
-dependencies = {file = "requirements.txt" }
+dependencies = { file = "requirements.txt" }
