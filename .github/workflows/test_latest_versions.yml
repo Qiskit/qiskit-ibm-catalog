@@ -24,8 +24,8 @@ jobs:
         include:
           - os: macos-latest
             python-version: 3.11
-          # - os: windows-latest
-          #   python-version: 3.11
+          - os: windows-latest
+            python-version: 3.11
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
@@ -36,12 +36,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install tox
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
       - name: Modify tox.ini for more thorough check
         shell: bash
         run: |
           sed -i.bak -E '/#.*CI:[[:space:]]*skip-next-line/I{N;d;}' tox.ini
           cat tox.ini
-      - name: Set tox environment name
-        run: echo "TOXENV=py${{ matrix.python-version }}" >> $GITHUB_ENV
       - name: Test using tox environment
-        run: tox -e $TOXENV
+        run: tox -e py${{ matrix.python-version }}
