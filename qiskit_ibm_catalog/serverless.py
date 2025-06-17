@@ -246,7 +246,8 @@ class QiskitServerless:
         except ValueError as error:
             raise QiskitServerlessException(
                 "Your channel value is not correct. Use one of the available channels: "
-                f"{Channel.LOCAL.value}, {Channel.IBM_QUANTUM.value}, {Channel.IBM_CLOUD.value}"
+                f"{Channel.LOCAL.value}, {Channel.IBM_QUANTUM.value}, "
+                f"{Channel.IBM_CLOUD.value}, {Channel.IBM_QUANTUM_PLATFORM.value}"
             ) from error
 
         QiskitRuntimeService.save_account(
