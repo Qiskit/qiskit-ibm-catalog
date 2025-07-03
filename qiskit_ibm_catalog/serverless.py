@@ -241,16 +241,7 @@ class QiskitServerless:
             overwrite: ``True`` if the existing account is to be overwritten
         """
 
-        try:
-            channel_enum = Channel(channel)
-        except ValueError as error:
-            raise QiskitServerlessException(
-                "Your channel value is not correct. Use one of the available channels: "
-                f"{Channel.LOCAL.value}, {Channel.IBM_QUANTUM.value}, "
-                f"{Channel.IBM_CLOUD.value}, {Channel.IBM_QUANTUM_PLATFORM.value}"
-            ) from error
-
-        QiskitRuntimeService.save_account(
+        IBMServerlessClient.save_account(
             channel=channel_enum.value,
             token=token,
             instance=instance,
