@@ -24,12 +24,10 @@ from __future__ import annotations
 from typing import Optional, List
 import warnings
 
-from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_serverless import IBMServerlessClient
 from qiskit_serverless.core import Job, QiskitFunction
 from qiskit_serverless.core.enums import Channel
 from qiskit_serverless.core.function import RunnableQiskitFunction
-from qiskit_serverless.exception import QiskitServerlessException
 
 
 class QiskitServerless:
@@ -242,7 +240,7 @@ class QiskitServerless:
         """
 
         IBMServerlessClient.save_account(
-            channel=channel_enum.value,
+            channel=channel,
             token=token,
             instance=instance,
             name=name,
