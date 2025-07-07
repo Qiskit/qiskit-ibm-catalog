@@ -23,12 +23,10 @@ from __future__ import annotations
 from typing import Optional, List
 import warnings
 
-from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_serverless import IBMServerlessClient
 from qiskit_serverless.core import Job, QiskitFunction
 from qiskit_serverless.core.enums import Channel
 from qiskit_serverless.core.function import RunnableQiskitFunction
-from qiskit_serverless.exception import QiskitServerlessException
 
 
 class QiskitFunctionsCatalog:
@@ -228,17 +226,8 @@ class QiskitFunctionsCatalog:
             name: Name of the account to save
             overwrite: ``True`` if the existing account is to be overwritten
         """
-        try:
-            channel_enum = Channel(channel)
-        except ValueError as error:
-            raise QiskitServerlessException(
-                "Your channel value is not correct. Use one of the available channels: "
-                f"{Channel.LOCAL.value}, {Channel.IBM_QUANTUM.value}, "
-                f"{Channel.IBM_CLOUD.value}, {Channel.IBM_QUANTUM_PLATFORM.value}"
-            ) from error
-
-        QiskitRuntimeService.save_account(
-            channel=channel_enum.value,
+        IBMServerlessClient.save_account(
+            channel=channel,
             token=token,
             instance=instance,
             name=name,
