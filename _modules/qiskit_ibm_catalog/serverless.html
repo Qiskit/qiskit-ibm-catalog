@@ -246,12 +246,10 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_ibm_runtime</span><span class="w"> </span><span class="kn">import</span> <span class="n">QiskitRuntimeService</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_serverless</span><span class="w"> </span><span class="kn">import</span> <span class="n">IBMServerlessClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_serverless.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Job</span><span class="p">,</span> <span class="n">QiskitFunction</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_serverless.core.enums</span><span class="w"> </span><span class="kn">import</span> <span class="n">Channel</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_serverless.core.function</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunnableQiskitFunction</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_serverless.exception</span><span class="w"> </span><span class="kn">import</span> <span class="n">QiskitServerlessException</span>
 
 
 <div class="viewcode-block" id="QiskitServerless">
@@ -468,17 +466,8 @@
 <span class="sd">            overwrite: ``True`` if the existing account is to be overwritten</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">channel_enum</span> <span class="o">=</span> <span class="n">Channel</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">QiskitServerlessException</span><span class="p">(</span>
-                <span class="s2">&quot;Your channel value is not correct. Use one of the available channels: &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Channel</span><span class="o">.</span><span class="n">LOCAL</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">Channel</span><span class="o">.</span><span class="n">IBM_QUANTUM</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">, &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Channel</span><span class="o">.</span><span class="n">IBM_CLOUD</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">Channel</span><span class="o">.</span><span class="n">IBM_QUANTUM_PLATFORM</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">error</span>
-
-        <span class="n">QiskitRuntimeService</span><span class="o">.</span><span class="n">save_account</span><span class="p">(</span>
-            <span class="n">channel</span><span class="o">=</span><span class="n">channel_enum</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="n">IBMServerlessClient</span><span class="o">.</span><span class="n">save_account</span><span class="p">(</span>
+            <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
             <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span>
             <span class="n">instance</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span>
             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
