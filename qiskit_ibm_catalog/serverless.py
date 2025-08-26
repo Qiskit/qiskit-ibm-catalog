@@ -37,7 +37,7 @@ class QiskitServerless:
     Credentials can be saved to disk by calling the `save_account()` method::
 
         from qiskit_ibm_catalog import QiskitServerless
-        QiskitServerless.save_account(token=<INSERT_IBM_QUANTUM_TOKEN>)
+        QiskitServerless.save_account(token=<INSERT_IBM_QUANTUM_TOKEN>, instance=<INSERT_CRN>)
 
     Once the credentials are saved, you can simply instantiate the serverless with no
     constructor args, as shown below.
@@ -49,7 +49,7 @@ class QiskitServerless:
     serverless with the API token::
 
         from qiskit_ibm_catalog import QiskitServerless
-        serverless = QiskitServerless(token=<INSERT_IBM_QUANTUM_TOKEN>)
+        serverless = QiskitServerless(token=<INSERT_IBM_QUANTUM_TOKEN>, instance=<INSERT_CRN>)
     """
 
     PRE_FILTER_KEYWORD: str = "serverless"
@@ -57,7 +57,7 @@ class QiskitServerless:
     def __init__(
         self,
         token: Optional[str] = None,
-        channel: str = Channel.IBM_QUANTUM.value,
+        channel: str = Channel.IBM_QUANTUM_PLATFORM.value,
         instance: Optional[str] = None,
         name: Optional[str] = None,
     ) -> None:
@@ -223,7 +223,7 @@ class QiskitServerless:
     @staticmethod
     def save_account(
         token: Optional[str] = None,
-        channel: str = Channel.IBM_QUANTUM.value,
+        channel: str = Channel.IBM_QUANTUM_PLATFORM.value,
         instance: Optional[str] = None,
         name: Optional[str] = None,
         overwrite: Optional[bool] = False,

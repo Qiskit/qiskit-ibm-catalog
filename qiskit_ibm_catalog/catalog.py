@@ -56,7 +56,7 @@ class QiskitFunctionsCatalog:
     def __init__(
         self,
         token: Optional[str] = None,
-        channel: str = Channel.IBM_QUANTUM.value,
+        channel: str = Channel.IBM_QUANTUM_PLATFORM.value,
         instance: Optional[str] = None,
         name: Optional[str] = None,
     ) -> None:
@@ -211,7 +211,7 @@ class QiskitFunctionsCatalog:
     @staticmethod
     def save_account(
         token: Optional[str] = None,
-        channel: str = Channel.IBM_QUANTUM.value,
+        channel: str = Channel.IBM_QUANTUM_PLATFORM.value,
         instance: Optional[str] = None,
         name: Optional[str] = None,
         overwrite: Optional[bool] = False,
