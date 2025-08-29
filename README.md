@@ -42,7 +42,7 @@ pip install qiskit-ibm-catalog
 ```python
 from qiskit_ibm_catalog import QiskitFunctionsCatalog
 
-catalog = QiskitFunctionsCatalog(token=...)
+catalog = QiskitFunctionsCatalog(token=..., instance=...)
 
 catalog.list()
 # [<QiskitFunction("ibm/...")>, ...]

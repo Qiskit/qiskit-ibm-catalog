@@ -48,7 +48,7 @@ class QiskitFunctionsCatalog:
     provider with the API token::
 
         from qiskit_ibm_catalog import QiskitFunctionsCatalog
-        catalog = QiskitFunctionsCatalog(token=<INSERT_IBM_QUANTUM_TOKEN>)
+        catalog = QiskitFunctionsCatalog(token=<INSERT_IBM_QUANTUM_TOKEN>, instance=<INSERT_CRN>)
     """
 
     PRE_FILTER_KEYWORD: str = "catalog"
