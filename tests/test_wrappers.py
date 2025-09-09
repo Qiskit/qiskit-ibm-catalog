@@ -35,7 +35,7 @@ class TestCatalog(TestCase):
     )
     def test_basic_functions(self, _token_mock, jobs_mock, functions_list_mock):
         """Tests basic function of catalog."""
-        catalog = QiskitFunctionsCatalog("token")
+        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
         jobs = catalog.jobs(limit=10)
         functions = catalog.list()
 
@@ -62,7 +62,7 @@ class TestServerless(TestCase):
     )
     def test_basic_functions(self, _token_mock, jobs_mock, functions_list_mock):
         """Tests basic function of serverless client."""
-        serverless = QiskitServerless("token")
+        serverless = QiskitServerless(token="token", instance="instance")
         jobs = serverless.jobs(limit=10)
         functions = serverless.list()
 
