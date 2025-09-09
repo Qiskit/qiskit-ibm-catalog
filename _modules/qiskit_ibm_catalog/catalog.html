@@ -333,6 +333,14 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Job</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns list of jobs.</span>
 
+<span class="sd">        Args:</span>
+<span class="sd">            limit (int, optional): Maximum number of jobs to return. Defaults to 10.</span>
+<span class="sd">            offset (int, optional): Number of jobs to skip. Defaults to 0.</span>
+<span class="sd">            status (str, optional): Filter by job status.</span>
+<span class="sd">            created_after (str, optional): Filter jobs created after this timestamp.</span>
+<span class="sd">            function_name (str, optional): Filter by function name.</span>
+<span class="sd">            **kwargs: Additional query parameters.</span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            List[Job]: jobs</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -342,8 +350,12 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;List of jobs created in this provider and function.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            function: QiskitFunction</span>
-<span class="sd">            **kwargs: additional parameters for the request</span>
+<span class="sd">            function (QiskitFunction): Function object.</span>
+<span class="sd">            limit (int, optional): Maximum number of jobs to return. Defaults to 10.</span>
+<span class="sd">            offset (int, optional): Number of jobs to skip. Defaults to 0.</span>
+<span class="sd">            status (str, optional): Filter by job status.</span>
+<span class="sd">            created_after (str, optional): Filter jobs created after this timestamp.</span>
+<span class="sd">            **kwargs: Additional query parameters.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            QiskitServerlessException: validation exception</span>
