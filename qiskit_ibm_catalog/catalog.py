@@ -106,6 +106,14 @@ class QiskitFunctionsCatalog:
     def jobs(self, **kwargs) -> List[Job]:
         """Returns list of jobs.
 
+        Args:
+            limit (int, optional): Maximum number of jobs to return. Defaults to 10.
+            offset (int, optional): Number of jobs to skip. Defaults to 0.
+            status (str, optional): Filter by job status.
+            created_after (str, optional): Filter jobs created after this timestamp.
+            function_name (str, optional): Filter by function name.
+            **kwargs: Additional query parameters.
+
         Returns:
             List[Job]: jobs
         """
@@ -115,8 +123,12 @@ class QiskitFunctionsCatalog:
         """List of jobs created in this provider and function.
 
         Args:
-            function: QiskitFunction
-            **kwargs: additional parameters for the request
+            function (QiskitFunction): Function object.
+            limit (int, optional): Maximum number of jobs to return. Defaults to 10.
+            offset (int, optional): Number of jobs to skip. Defaults to 0.
+            status (str, optional): Filter by job status.
+            created_after (str, optional): Filter jobs created after this timestamp.
+            **kwargs: Additional query parameters.
 
         Raises:
             QiskitServerlessException: validation exception
