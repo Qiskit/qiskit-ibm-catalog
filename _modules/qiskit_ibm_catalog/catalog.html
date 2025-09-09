@@ -272,7 +272,7 @@
 <span class="sd">    provider with the API token::</span>
 
 <span class="sd">        from qiskit_ibm_catalog import QiskitFunctionsCatalog</span>
-<span class="sd">        catalog = QiskitFunctionsCatalog(token=&lt;INSERT_IBM_QUANTUM_TOKEN&gt;)</span>
+<span class="sd">        catalog = QiskitFunctionsCatalog(token=&lt;INSERT_IBM_QUANTUM_TOKEN&gt;, instance=&lt;INSERT_CRN&gt;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">PRE_FILTER_KEYWORD</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;catalog&quot;</span>
@@ -282,7 +282,7 @@
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Channel</span><span class="o">.</span><span class="n">IBM_QUANTUM</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Channel</span><span class="o">.</span><span class="n">IBM_QUANTUM_PLATFORM</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
         <span class="n">instance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -450,7 +450,7 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">save_account</span><span class="p">(</span>
         <span class="n">token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Channel</span><span class="o">.</span><span class="n">IBM_QUANTUM</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+        <span class="n">channel</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Channel</span><span class="o">.</span><span class="n">IBM_QUANTUM_PLATFORM</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
         <span class="n">instance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">overwrite</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>

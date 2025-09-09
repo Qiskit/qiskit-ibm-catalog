@@ -225,23 +225,25 @@
 <h1>QiskitServerless client tutorial<a class="headerlink" href="#QiskitServerless-client-tutorial" title="Link to this heading">¶</a></h1>
 <p>Getting started with QiskitServerless</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;QiskitServerless client&quot;&quot;&quot;</span>
+
 <span class="c1"># pylint: disable=pointless-statement</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_ibm_catalog</span><span class="w"> </span><span class="kn">import</span> <span class="n">QiskitServerless</span><span class="p">,</span> <span class="n">QiskitFunction</span>
 
-<span class="n">serverless</span> <span class="o">=</span> <span class="n">QiskitServerless</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;TOKEN&quot;</span><span class="p">))</span>
+<span class="n">serverless</span> <span class="o">=</span> <span class="n">QiskitServerless</span><span class="p">(</span>
+    <span class="n">token</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;TOKEN&quot;</span><span class="p">),</span> <span class="n">instance</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;INSTANCE&quot;</span><span class="p">)</span>
+<span class="p">)</span>
 <span class="n">serverless</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
+<div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
