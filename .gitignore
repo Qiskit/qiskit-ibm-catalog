@@ -6,6 +6,8 @@ venv/
 .idea/
 .vscode/
 
+/templates/hamiltonian-simulation/source_files/
+
 # Distribution / packaging
 .Python
 env/
