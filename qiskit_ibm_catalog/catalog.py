@@ -166,6 +166,25 @@ class QiskitFunctionsCatalog:
         )
         return self.job(job_id=job_id)
 
+    def runtime_jobs(
+        self, job_id: str, runtime_session: Optional[str] = None
+    ) -> List[str]:
+        """Returns list of qiskit runtime job ids associated to the catalog job id
+        and optionally filtered by session.
+
+        Returns:
+            List[str]: job ids
+        """
+        return self._client.runtime_jobs(job_id, runtime_session)
+
+    def runtime_sessions(self, job_id: str):
+        """Returns list of qiskit runtime session ids associated to the catalog job id.
+
+        Returns:
+            List[str]: session ids
+        """
+        return self._client.runtime_sessions(job_id)
+
     def files(self, function: QiskitFunction) -> List[str]:
         """Returns the list of files available for the user in the Qiskit Function folder."""
         return self._client.files(function)
