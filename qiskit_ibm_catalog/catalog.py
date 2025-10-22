@@ -48,7 +48,7 @@ class QiskitFunctionsCatalog:
     provider with the API token::
 
         from qiskit_ibm_catalog import QiskitFunctionsCatalog
-        catalog = QiskitFunctionsCatalog(token=<INSERT_IBM_QUANTUM_TOKEN>)
+        catalog = QiskitFunctionsCatalog(token=<INSERT_IBM_QUANTUM_TOKEN>, instance=<INSERT_CRN>)
     """
 
     PRE_FILTER_KEYWORD: str = "catalog"
@@ -56,7 +56,7 @@ class QiskitFunctionsCatalog:
     def __init__(
         self,
         token: Optional[str] = None,
-        channel: str = Channel.IBM_QUANTUM.value,
+        channel: str = Channel.IBM_QUANTUM_PLATFORM.value,
         instance: Optional[str] = None,
         name: Optional[str] = None,
     ) -> None:
@@ -106,6 +106,14 @@ class QiskitFunctionsCatalog:
     def jobs(self, **kwargs) -> List[Job]:
         """Returns list of jobs.
 
+        Args:
+            limit (int, optional): Maximum number of jobs to return. Defaults to 10.
+            offset (int, optional): Number of jobs to skip. Defaults to 0.
+            status (str, optional): Filter by job status.
+            created_after (str, optional): Filter jobs created after this timestamp.
+            function_name (str, optional): Filter by function name.
+            **kwargs: Additional query parameters.
+
         Returns:
             List[Job]: jobs
         """
@@ -115,8 +123,12 @@ class QiskitFunctionsCatalog:
         """List of jobs created in this provider and function.
 
         Args:
-            function: QiskitFunction
-            **kwargs: additional parameters for the request
+            function (QiskitFunction): Function object.
+            limit (int, optional): Maximum number of jobs to return. Defaults to 10.
+            offset (int, optional): Number of jobs to skip. Defaults to 0.
+            status (str, optional): Filter by job status.
+            created_after (str, optional): Filter jobs created after this timestamp.
+            **kwargs: Additional query parameters.
 
         Raises:
             QiskitServerlessException: validation exception
@@ -230,7 +242,7 @@ class QiskitFunctionsCatalog:
     @staticmethod
     def save_account(
         token: Optional[str] = None,
-        channel: str = Channel.IBM_QUANTUM.value,
+        channel: str = Channel.IBM_QUANTUM_PLATFORM.value,
         instance: Optional[str] = None,
         name: Optional[str] = None,
         overwrite: Optional[bool] = False,
