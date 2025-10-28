@@ -327,6 +327,12 @@ be retrieved from the user’s local IBM Quantum account config file.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">provider_jobs</span></code>(function, **kwargs)</p></td>
 <td><p>List of jobs created in this provider and function.</p></td>
 </tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">runtime_jobs</span></code>(job_id[, runtime_session])</p></td>
+<td><p>Returns list of qiskit runtime job ids associated to the serverless job id and optionally filtered by session.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">runtime_sessions</span></code>(job_id)</p></td>
+<td><p>Returns list of qiskit runtime session ids associated to the serverless job id.</p></td>
+</tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_account</span></code>([token, channel, instance, ...])</p></td>
 <td><p>Save the account to disk for future use.</p></td>
 </tr>

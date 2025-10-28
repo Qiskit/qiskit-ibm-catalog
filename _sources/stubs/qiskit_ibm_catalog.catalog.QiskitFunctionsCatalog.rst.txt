@@ -28,6 +28,8 @@
       ~QiskitFunctionsCatalog.provider_file_upload
       ~QiskitFunctionsCatalog.provider_files
       ~QiskitFunctionsCatalog.provider_jobs
+      ~QiskitFunctionsCatalog.runtime_jobs
+      ~QiskitFunctionsCatalog.runtime_sessions
       ~QiskitFunctionsCatalog.save_account
    
    

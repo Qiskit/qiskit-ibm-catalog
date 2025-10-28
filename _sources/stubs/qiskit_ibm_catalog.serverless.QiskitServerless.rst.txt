@@ -28,6 +28,8 @@
       ~QiskitServerless.provider_file_upload
       ~QiskitServerless.provider_files
       ~QiskitServerless.provider_jobs
+      ~QiskitServerless.runtime_jobs
+      ~QiskitServerless.runtime_sessions
       ~QiskitServerless.save_account
       ~QiskitServerless.upload
    
