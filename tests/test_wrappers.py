@@ -62,7 +62,9 @@ class TestServerless(TestCase):
     )
     def test_basic_functions(self, _token_mock, jobs_mock, functions_list_mock):
         """Tests basic function of serverless client."""
-        serverless = QiskitServerless(token="token", instance="instance", host="http://host")
+        serverless = QiskitServerless(
+            token="token", instance="instance", host="http://host"
+        )
 
         self.assertEqual(serverless._client.token, "token")
         self.assertEqual(serverless._client.instance, "instance")
