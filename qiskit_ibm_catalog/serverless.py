@@ -61,6 +61,7 @@ class QiskitServerless:
         channel: str = Channel.IBM_QUANTUM_PLATFORM.value,
         instance: Optional[str] = None,
         name: Optional[str] = None,
+        *,
         host: Optional[str] = None,
     ) -> None:
         """
