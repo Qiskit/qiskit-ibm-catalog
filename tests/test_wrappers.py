@@ -66,9 +66,11 @@ class TestServerless(TestCase):
             token="token", instance="instance", host="http://host"
         )
 
+        # pylint: disable=protected-access
         self.assertEqual(serverless._client.token, "token")
         self.assertEqual(serverless._client.instance, "instance")
         self.assertEqual(serverless._client.host, "http://host")
+        # pylint: enable=protected-access
 
         jobs = serverless.jobs(limit=10)
         functions = serverless.list()

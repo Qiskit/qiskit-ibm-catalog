@@ -54,6 +54,7 @@ class QiskitServerless:
 
     PRE_FILTER_KEYWORD: str = "serverless"
 
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         token: Optional[str] = None,
