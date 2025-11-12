@@ -60,6 +60,7 @@ class QiskitServerless:
         channel: str = Channel.IBM_QUANTUM_PLATFORM.value,
         instance: Optional[str] = None,
         name: Optional[str] = None,
+        host: Optional[str] = None,
     ) -> None:
         """
         Initialize qiskit serverless client.
@@ -77,7 +78,7 @@ class QiskitServerless:
             name: Name of the account to load
         """
         self._client = IBMServerlessClient(
-            channel=channel, token=token, instance=instance, name=name
+            channel=channel, token=token, instance=instance, name=name, host=host
         )
 
     def upload(self, function: QiskitFunction) -> RunnableQiskitFunction:
