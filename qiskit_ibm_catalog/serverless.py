@@ -54,12 +54,15 @@ class QiskitServerless:
 
     PRE_FILTER_KEYWORD: str = "serverless"
 
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         token: Optional[str] = None,
         channel: str = Channel.IBM_QUANTUM_PLATFORM.value,
         instance: Optional[str] = None,
         name: Optional[str] = None,
+        *,
+        host: Optional[str] = None,
     ) -> None:
         """
         Initialize qiskit serverless client.
@@ -77,7 +80,7 @@ class QiskitServerless:
             name: Name of the account to load
         """
         self._client = IBMServerlessClient(
-            channel=channel, token=token, instance=instance, name=name
+            channel=channel, token=token, instance=instance, name=name, host=host
         )
 
     def upload(self, function: QiskitFunction) -> RunnableQiskitFunction:
