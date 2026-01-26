@@ -39,7 +39,11 @@ class TestCatalog(TestCase):
         jobs = catalog.jobs(limit=10)
         functions = catalog.list()
 
-        jobs_mock.assert_called_with(**{"filter": "catalog", "limit": 10})
+        jobs_mock.assert_called()
+        called_kwargs = jobs_mock.call_args.kwargs
+        assert called_kwargs["filter"] == "catalog"
+        assert called_kwargs["limit"] == 10
+
         functions_list_mock.assert_called_with(**{"filter": "catalog"})
 
         self.assertEqual(len(jobs), 1)
@@ -75,7 +79,10 @@ class TestServerless(TestCase):
         jobs = serverless.jobs(limit=10)
         functions = serverless.list()
 
-        jobs_mock.assert_called_with(**{"filter": "serverless", "limit": 10})
+        jobs_mock.assert_called()
+        called_kwargs = jobs_mock.call_args.kwargs
+        assert called_kwargs["filter"] == "serverless"
+        assert called_kwargs["limit"] == 10
         functions_list_mock.assert_called_with(**{"filter": "serverless"})
 
         self.assertEqual(len(jobs), 1)

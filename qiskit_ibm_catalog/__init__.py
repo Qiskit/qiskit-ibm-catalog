@@ -20,6 +20,7 @@
     QiskitServerless
     QiskitFunction
 """
+
 # pylint: disable=W0404
 from importlib_metadata import version as metadata_version, PackageNotFoundError
 
@@ -27,7 +28,6 @@ from qiskit_serverless import QiskitFunction
 
 from .catalog import QiskitFunctionsCatalog
 from .serverless import QiskitServerless
-
 
 try:
     __version__ = metadata_version("qiskit_ibm_catalog")

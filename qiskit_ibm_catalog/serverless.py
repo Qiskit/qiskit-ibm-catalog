@@ -18,6 +18,7 @@
 
     QiskitServerless
 """
+
 # pylint: disable=duplicate-code
 from __future__ import annotations
 
@@ -118,13 +119,15 @@ class QiskitServerless:
             **{**kwargs, **{"filter": self.PRE_FILTER_KEYWORD}}
         )
 
-    def jobs(self, **kwargs) -> List[Job]:
+    def jobs(self, function: Optional[QiskitFunction] = None, **kwargs) -> List[Job]:
         """Returns list of jobs.
 
         Returns:
             List[Job]: jobs
         """
-        return self._client.jobs(**{**kwargs, **{"filter": self.PRE_FILTER_KEYWORD}})
+        return self._client.jobs(
+            function=function, **{**kwargs, **{"filter": self.PRE_FILTER_KEYWORD}}
+        )
 
     def provider_jobs(self, function: QiskitFunction, **kwargs) -> List[Job]:
         """List of jobs created in this provider and function.
