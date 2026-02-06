@@ -9,6 +9,10 @@ on:
     branches:
       - main
       - 'stable/**'
+  merge_group:
+    branches:
+      - main
+      - 'stable/**'
   schedule:
     - cron: '0 1 * * *'
 
