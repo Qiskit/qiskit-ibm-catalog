@@ -71,3 +71,36 @@ class TestServerless(TestCase):
 
         self.assertEqual(len(jobs), 1)
         self.assertEqual(len(functions), 1)
+
+    @mock.patch.object(
+        IBMServerlessClient, "jobs", return_value=[Job("42", mock.MagicMock())]
+    )
+    @mock.patch(
+        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
+    )
+    def test_jobs_with_function_filter(self, _verify_mock, jobs_mock):
+        """Tests that 'function' is forwarded and 'serverless' filter is enforced."""
+        serverless = QiskitServerless(
+            token="token", instance="instance", host="http://host"
+        )
+
+        my_function = QiskitFunction("my-func")
+
+        # Call jobs with both function and an additional kwarg
+        jobs = serverless.jobs(function=my_function, limit=7)
+
+        jobs_mock.assert_called()
+        called_args = jobs_mock.call_args.args
+        called_kwargs = jobs_mock.call_args.kwargs
+
+        # Positional args should be empty because we pass by keyword
+        assert called_args == ()
+
+        # Ensure 'function' got forwarded and 'filter' remained enforced
+        assert called_kwargs["function"] is my_function
+        assert called_kwargs["filter"] == "serverless"
+        assert called_kwargs["limit"] == 7
+
+        self.assertEqual(len(jobs), 1)
+        self.assertIsInstance(jobs[0], Job)
+        self.assertEqual(jobs[0].job_id, "42")
