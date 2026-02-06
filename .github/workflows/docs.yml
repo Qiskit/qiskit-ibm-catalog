@@ -10,6 +10,10 @@ on:
     branches:
       - main
       - 'stable/**'
+  merge_group:
+    branches:
+      - main
+      - 'stable/**'
 
 jobs:
   build_and_deploy_docs:
