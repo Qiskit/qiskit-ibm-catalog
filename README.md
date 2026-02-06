@@ -16,7 +16,7 @@
 
 1.  [Installation](#installation)
 2.  [Quickstart Guide](#quickstart-guide)
-3.  [Tutorials](docs/tutorials/example_tutorial.ipynb)
+3.  [Tutorials](https://github.com/Qiskit/qiskit-ibm-catalog/tree/main/docs/tutorials)
 4.  [File Glossary](docs/file-map-and-description.md)
 5.  [How to Give Feedback](#how-to-give-feedback)
 6.  [Contribution Guidelines](#contribution-guidelines)
