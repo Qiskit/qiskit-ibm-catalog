@@ -6,9 +6,13 @@
 [![Tests](https://github.com/qiskit-community/quantum-prototype-template/actions/workflows/test_latest_versions.yml/badge.svg)](https://github.com/qiskit-community/quantum-prototype-template/actions/workflows/test_latest_versions.yml)
 [![Coverage](https://coveralls.io/repos/github/qiskit-community/quantum-prototype-template/badge.svg?branch=main)](https://coveralls.io/github/qiskit-community/quantum-prototype-template?branch=main)
 
-# Qiskit IBM catalog client
+# Qiskit Functions Catalog IBM Client
 
-...
+Client for the IBM Quantum Platform's Qiskit Functions service.
+
+[Qiskit Functions](https://quantum.cloud.ibm.com/functions) are abstracted services designed to accelerate application research. They simplify and accelerate utility-scale algorithm discovery and application development, by abstracting away parts of the quantum software development workflow.
+
+This module provides the interface to access the Qiskit Functions service on IBM Quantum Platform.
 
 ### Table of Contents
 
