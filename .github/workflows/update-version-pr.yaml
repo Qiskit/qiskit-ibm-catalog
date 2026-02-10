@@ -90,6 +90,8 @@ jobs:
         if: steps.decision.outputs.update == 'true'
         id: apply
         run: |
+          UPDATE_TYPE="${{ steps.decision.outputs.update_type }}"
+          
           # Compute new catalog version
           OLD_VER=$(tr -d '[:space:]' < qiskit_ibm_catalog/VERSION.txt)
           IFS='.' read -r A B C <<< "$OLD_VER"
@@ -101,7 +103,6 @@ jobs:
           BRANCH="prepare-${NEW_VER}-release"
 
           # Compute new serverless pin
-          UPDATE_TYPE="${{ steps.decision.outputs.update_type }}"
           LM=${{ steps.pypi.outputs.latest_major }}
           Ln=${{ steps.pypi.outputs.latest_minor }}
           if [ "$UPDATE_TYPE" = "major" ]; then
