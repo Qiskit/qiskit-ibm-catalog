@@ -1,0 +1,150 @@
+name: Generate release preparation PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      override_version:
+        description: "Manually override the latest qiskit-serverless version. Leave empty to use PyPI."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  prepare-release-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Read current pin from requirements.txt
+        id: current
+        run: |
+          LINE=$(grep -E '^qiskit-serverless~=' requirements.txt | head -n1 || true)
+          CURR_VER="${LINE#*~=}"
+          echo "Current pin version: $CURR_VER"
+          IFS='.' read -r CURR_MAJ CURR_MIN CURR_PAT <<< "$CURR_VER"
+          echo "curr_major=$CURR_MAJ" >> "$GITHUB_OUTPUT"
+          echo "curr_minor=$CURR_MIN" >> "$GITHUB_OUTPUT"
+          echo "curr_patch=$CURR_PAT" >> "$GITHUB_OUTPUT"
+
+      - name: Determine latest qiskit-serverless version
+        id: pypi
+        run: |
+          # workflow_dispatch override
+          OVERRIDE="${{ inputs.override_version }}"
+
+          if [ -n "$OVERRIDE" ]; then
+            echo "Using workflow_dispatch override version: $OVERRIDE"
+            LATEST="$OVERRIDE"
+          else
+            echo "Fetching latest version from PyPI..."
+            JSON=$(curl -fsSL https://pypi.org/pypi/qiskit-serverless/json)
+            LATEST=$(echo "$JSON" \
+              | jq -r '.releases | keys[]' \
+              | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' \
+              | sort -V | tail -n1)
+            if [ -z "$LATEST" ]; then
+              echo "Failed to determine latest stable version from PyPI." >&2
+              exit 1
+            fi
+          fi
+
+          echo "Using latest version: $LATEST"
+          IFS='.' read -r L_MAJ L_MIN L_PAT <<< "$LATEST"
+          echo "latest=$LATEST" >> "$GITHUB_OUTPUT"
+          echo "latest_major=$L_MAJ" >> "$GITHUB_OUTPUT"
+          echo "latest_minor=$L_MIN" >> "$GITHUB_OUTPUT"
+          echo "latest_patch=$L_PAT" >> "$GITHUB_OUTPUT"
+
+      - name: Decide if update needed (ignore patch-only updates)
+        id: decision
+        run: |
+          CM=${{ steps.current.outputs.curr_major }}
+          Cn=${{ steps.current.outputs.curr_minor }}
+          LM=${{ steps.pypi.outputs.latest_major }}
+          Ln=${{ steps.pypi.outputs.latest_minor }}
+
+          if [ "$LM" -gt "$CM" ]; then
+            echo "Upstream major bump detected"
+            echo "update=true" >> "$GITHUB_OUTPUT"
+            echo "update_type=major" >> "$GITHUB_OUTPUT"
+          elif [ "$LM" -eq "$CM" ] && [ "$Ln" -gt "$Cn" ]; then
+            echo "Upstream minor bump detected"
+            echo "update=true" >> "$GITHUB_OUTPUT"
+            echo "update_type=minor" >> "$GITHUB_OUTPUT"
+          else
+            echo "No update needed (patch-only or older)"
+            echo "update=false" >> "$GITHUB_OUTPUT"
+            echo "update_type=none" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Stop if no update needed
+        if: steps.decision.outputs.update == 'false'
+        run: echo "Nothing to do."
+
+      - name: Apply updates
+        if: steps.decision.outputs.update == 'true'
+        id: apply
+        run: |
+          UPDATE_TYPE="${{ steps.decision.outputs.update_type }}"
+          
+          # Compute new catalog version
+          OLD_VER=$(tr -d '[:space:]' < qiskit_ibm_catalog/VERSION.txt)
+          IFS='.' read -r A B C <<< "$OLD_VER"
+          if [ "$UPDATE_TYPE" = "major" ]; then
+            NEW_VER="$((A + 1)).0.0"
+          else
+            NEW_VER="${A}.$((B + 1)).0"
+          fi
+          BRANCH="prepare-${NEW_VER}-release"
+
+          # Compute new serverless pin
+          LM=${{ steps.pypi.outputs.latest_major }}
+          Ln=${{ steps.pypi.outputs.latest_minor }}
+          if [ "$UPDATE_TYPE" = "major" ]; then
+            NEW_PIN_VER="${LM}.0.0"
+          else
+            NEW_PIN_VER="${LM}.${Ln}.0"
+          fi
+
+          # Apply updates
+          echo "Updating pin to qiskit-serverless~=${NEW_PIN_VER}"
+          sed -i -E "s/^qiskit-serverless~=[0-9]+\.[0-9]+\.[0-9]+/qiskit-serverless~=${NEW_PIN_VER}/" requirements.txt
+          echo "$NEW_VER" > qiskit_ibm_catalog/VERSION.txt
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "new_pkg_version=$NEW_VER" >> "$GITHUB_OUTPUT"
+          echo "new_pin_version=$NEW_PIN_VER" >> "$GITHUB_OUTPUT"
+
+      - name: Create Pull Request
+        if: steps.decision.outputs.update == 'true'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ steps.apply.outputs.branch }}
+          base: main
+          title: >
+            Prepare ${{ steps.apply.outputs.new_pkg_version }} release
+          body: |
+            This PR prepares a new release of **qiskit-ibm-catalog**:
+
+            - Bump catalog version → `${{ steps.apply.outputs.new_pkg_version }}`
+            - Update qiskit-serverless requirement → `qiskit-serverless~=${{ steps.apply.outputs.new_pin_version }}`
+            - Patch-only updates of `qiskit-serverless` are ignored
+            
+            To release the package:
+
+            - Merge this PR
+            - Ensure you're up to date: `git pull origin main` 
+            - Tag with `v${{ steps.apply.outputs.new_pkg_version }}`: `git tag -a v${{ steps.apply.outputs.new_pkg_version }} -m "Release Qiskit IBM Catalog v${{ steps.apply.outputs.new_pkg_version }}"`
+            - Push the tag to GitHub: `git push origin v${{ steps.apply.outputs.new_pkg_version }}`
+
+            Pushing the tag will trigger the following [GitHub workflow](https://github.com/Qiskit/qiskit-ibm-catalog/blob/main/.github/workflows/client-pypi-release.yaml) to release the package on PyPI.
+
+          labels: |
+            release
+            automation
+          delete-branch: true
