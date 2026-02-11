@@ -79,7 +79,7 @@ jobs:
           if: hashFiles('requirements.txt') != ''
           shell: bash
           run: |
-            sed -i.bak -E "s|^qiskit-serverless([[:space:]]*([<>=!~]=)?[^#]*)?$|qiskit-serverless @ git+https://github.com/Qiskit/qiskit-serverless.git@${QISKIT_SERVERLESS_REF}|g" requirements.txt
+            sed -i.bak -E "s|^qiskit-serverless([[:space:]]*([<>!=~]=)?[^#]*)?$|qiskit-serverless @ git+https://github.com/Qiskit/qiskit-serverless.git@${QISKIT_SERVERLESS_REF}#subdirectory=client|g" requirements.txt            
             echo "Final requirements.txt:"
             cat requirements.txt
         - name: Test using tox environment (qiskit-serverless from source)
