@@ -48,9 +48,9 @@ jobs:
             ${{ runner.os }}-pip-
       - name: Test using tox environment
         run: tox -e py${{ matrix.python-version }}
-        
+
   tests_serverless_from_source:
-      name: Tests (qiskit-serverless from source)
+      name: tests-serverless-from-source
       runs-on: ubuntu-latest
       timeout-minutes: 60
       env:
