@@ -46,10 +46,41 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-      - name: Modify tox.ini for more thorough check
-        shell: bash
-        run: |
-          sed -i.bak -E '/#.*CI:[[:space:]]*skip-next-line/I{N;d;}' tox.ini
-          cat tox.ini
       - name: Test using tox environment
         run: tox -e py${{ matrix.python-version }}
+
+  tests_serverless_from_source:
+      name: tests-serverless-from-source
+      runs-on: ubuntu-latest
+      timeout-minutes: 60
+      env:
+        QISKIT_SERVERLESS_REF: main
+      strategy:
+        max-parallel: 4
+        matrix:
+          python-version: ['3.10', '3.13']
+      steps:
+        - uses: actions/checkout@v6
+        - name: Set up Python ${{ matrix.python-version }}
+          uses: actions/setup-python@v6
+          with:
+            python-version: ${{ matrix.python-version }}
+        - name: Install dependencies
+          run: |
+            python -m pip install --upgrade pip
+            pip install tox
+        - uses: actions/cache@v5
+          with:
+            path: ~/.cache/pip
+            key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+            restore-keys: |
+              ${{ runner.os }}-pip-
+        - name: Override qiskit-serverless in requirements.txt to install from source
+          if: hashFiles('requirements.txt') != ''
+          shell: bash
+          run: |
+            sed -i.bak -E "s|^qiskit-serverless([[:space:]]*([<>!=~]=)?[^#]*)?$|qiskit-serverless @ git+https://github.com/Qiskit/qiskit-serverless.git@${QISKIT_SERVERLESS_REF}#subdirectory=client|g" requirements.txt            
+            echo "Final requirements.txt:"
+            cat requirements.txt
+        - name: Test using tox environment (qiskit-serverless from source)
+          run: tox -e py${{ matrix.python-version }}
