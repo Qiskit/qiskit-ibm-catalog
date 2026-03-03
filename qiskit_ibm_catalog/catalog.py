@@ -45,7 +45,7 @@ class QiskitFunctionsCatalog:
         catalog = QiskitFunctionsCatalog()
 
     You can also enable an account just for the current session by instantiating the
-    provider with the API token::
+    provider with the API token and CRN::
 
         from qiskit_ibm_catalog import QiskitFunctionsCatalog
         catalog = QiskitFunctionsCatalog(token=<INSERT_IBM_QUANTUM_TOKEN>, instance=<INSERT_CRN>)

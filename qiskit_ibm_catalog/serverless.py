@@ -46,7 +46,7 @@ class QiskitServerless:
         serverless = QiskitServerless()
 
     You can also enable an account just for the current session by instantiating the
-    serverless with the API token::
+    serverless with the API token and CRN::
 
         from qiskit_ibm_catalog import QiskitServerless
         serverless = QiskitServerless(token=<INSERT_IBM_QUANTUM_TOKEN>, instance=<INSERT_CRN>)
