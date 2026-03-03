@@ -26,7 +26,6 @@ import warnings
 
 from qiskit_serverless import IBMServerlessClient
 from qiskit_serverless.core import Job, QiskitFunction
-from qiskit_serverless.core.enums import Channel
 from qiskit_serverless.core.function import RunnableQiskitFunction
 
 
@@ -37,7 +36,7 @@ class QiskitFunctionsCatalog:
     Credentials can be saved to disk by calling the `save_account()` method::
 
         from qiskit_ibm_catalog import QiskitFunctionsCatalog
-        QiskitFunctionsCatalog.save_account(token=<INSERT_IBM_QUANTUM_TOKEN>)
+        QiskitFunctionsCatalog.save_account(token=<INSERT_IBM_QUANTUM_TOKEN>, instance=<INSERT_CRN>)
 
     Once the credentials are saved, you can simply instantiate the catalog with no
     constructor args, as shown below.
@@ -57,7 +56,7 @@ class QiskitFunctionsCatalog:
     def __init__(
         self,
         token: Optional[str] = None,
-        channel: str = Channel.IBM_QUANTUM_PLATFORM.value,
+        channel: Optional[str] = None,
         instance: Optional[str] = None,
         name: Optional[str] = None,
     ) -> None:
@@ -245,7 +244,7 @@ class QiskitFunctionsCatalog:
     @staticmethod
     def save_account(
         token: Optional[str] = None,
-        channel: str = Channel.IBM_QUANTUM_PLATFORM.value,
+        channel: Optional[str] = None,
         instance: Optional[str] = None,
         name: Optional[str] = None,
         overwrite: Optional[bool] = False,
