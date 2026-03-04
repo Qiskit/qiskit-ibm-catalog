@@ -27,7 +27,6 @@ import warnings
 
 from qiskit_serverless import IBMServerlessClient
 from qiskit_serverless.core import Job, QiskitFunction
-from qiskit_serverless.core.enums import Channel
 from qiskit_serverless.core.function import RunnableQiskitFunction
 
 
@@ -47,7 +46,7 @@ class QiskitServerless:
         serverless = QiskitServerless()
 
     You can also enable an account just for the current session by instantiating the
-    serverless with the API token::
+    serverless with the API token and CRN::
 
         from qiskit_ibm_catalog import QiskitServerless
         serverless = QiskitServerless(token=<INSERT_IBM_QUANTUM_TOKEN>, instance=<INSERT_CRN>)
@@ -59,7 +58,7 @@ class QiskitServerless:
     def __init__(
         self,
         token: Optional[str] = None,
-        channel: str = Channel.IBM_QUANTUM_PLATFORM.value,
+        channel: Optional[str] = None,
         instance: Optional[str] = None,
         name: Optional[str] = None,
         *,
@@ -248,7 +247,7 @@ class QiskitServerless:
     @staticmethod
     def save_account(
         token: Optional[str] = None,
-        channel: str = Channel.IBM_QUANTUM_PLATFORM.value,
+        channel: Optional[str] = None,
         instance: Optional[str] = None,
         name: Optional[str] = None,
         overwrite: Optional[bool] = False,
