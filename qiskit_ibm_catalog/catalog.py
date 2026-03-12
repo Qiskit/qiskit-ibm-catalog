@@ -93,52 +93,168 @@ class QiskitFunctionsCatalog:
         """
         return self._client.function(title=title, provider=provider)
 
-    def list(self, **kwargs) -> List[QiskitFunction]:
+    def list(
+        self,
+        *,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+        **kwargs,
+    ) -> List[QiskitFunction]:
         """Returns a list of available qiskit functions in catalog.
-
+        
+        Args:
+            limit: Maximum number of functions to return.
+            offset: Number of functions to skip for pagination.
+            **kwargs: Additional query parameters for advanced filtering.
+        
         Returns:
-            List[QiskitFunction]: list of qiskit functions
+            List[QiskitFunction]: List of qiskit functions available in the catalog.
+            
+        Example:
+            Get all catalog functions:
+            
+            >>> catalog = QiskitFunctionsCatalog()
+            >>> functions = catalog.list()
+            
+            Get first 10 functions:
+            
+            >>> functions = catalog.list(limit=10)
+            
+            Get next page of functions:
+            
+            >>> functions = catalog.list(limit=10, offset=10)
         """
-        return self._client.functions(
-            **{**kwargs, **{"filter": self.PRE_FILTER_KEYWORD}}
-        )
+        params = {**kwargs, "filter": self.PRE_FILTER_KEYWORD}
+        if limit is not None:
+            params["limit"] = limit
+        if offset is not None:
+            params["offset"] = offset
+        return self._client.functions(**params)
 
-    def jobs(self, function: Optional[QiskitFunction] = None, **kwargs) -> List[Job]:
-        """Returns list of jobs.
+    def jobs(
+        self,
+        function: Optional[QiskitFunction] = None,
+        *,
+        limit: int = 10,
+        offset: int = 0,
+        status: Optional[str] = None,
+        created_after: Optional[str] = None,
+        **kwargs,
+    ) -> List[Job]:
+        """Returns list of jobs from the catalog.
+        
+        Args:
+            function: Filter jobs by the function that created them.
+            limit: Maximum number of jobs to return. Default: 10.
+            offset: Number of jobs to skip for pagination. Default: 0.
+            status: Filter by job status. Valid values:
+                - "QUEUED": Job is waiting to run
+                - "RUNNING": Job is currently executing
+                - "DONE": Job completed successfully
+                - "ERROR": Job failed with an error
+                - "CANCELLED": Job was cancelled
+            created_after: Filter jobs created after this timestamp.
+                Format: ISO 8601 (e.g., "2024-01-01T00:00:00Z")
+            **kwargs: Additional query parameters for advanced filtering.
+        
+        Returns:
+            List[Job]: List of Job objects matching the specified criteria.
+            
+        Example:
+            Get the 5 most recent jobs:
+            
+            >>> catalog = QiskitFunctionsCatalog()
+            >>> jobs = catalog.jobs(limit=5)
+            
+            Get completed jobs:
+            
+            >>> jobs = catalog.jobs(status="DONE", limit=10)
+            
+            Get jobs from a specific function:
+            
+            >>> my_function = catalog.load("my-function")
+            >>> jobs = catalog.jobs(function=my_function, limit=20)
+            
+            Get jobs created after a specific date:
+            
+            >>> jobs = catalog.jobs(
+            ...     created_after="2024-01-01T00:00:00Z",
+            ...     status="DONE"
+            ... )
+        
+        Note:
+            The 'filter' parameter is automatically set to "catalog" to ensure
+            only catalog jobs are returned. This cannot be overridden.
+        """
+        params = {
+            **kwargs,
+            "limit": limit,
+            "offset": offset,
+            "filter": self.PRE_FILTER_KEYWORD,
+        }
+        if status is not None:
+            params["status"] = status
+        if created_after is not None:
+            params["created_after"] = created_after
+        return self._client.jobs(function=function, **params)
+
+    def provider_jobs(
+        self,
+        function: QiskitFunction,
+        *,
+        limit: int = 10,
+        offset: int = 0,
+        status: Optional[str] = None,
+        created_after: Optional[str] = None,
+        **kwargs,
+    ) -> List[Job]:
+        """List of jobs created by the provider for this function.
 
         Args:
-            function (QiskitFunction): The function that created the jobs we want to retrieve.
-            limit (int, optional): Maximum number of jobs to return. Defaults to 10.
-            offset (int, optional): Number of jobs to skip. Defaults to 0.
-            status (str, optional): Filter by job status.
-            created_after (str, optional): Filter jobs created after this timestamp.
-            **kwargs: Additional query parameters.
+            function: Function object to filter jobs by.
+            limit: Maximum number of jobs to return. Default: 10.
+            offset: Number of jobs to skip for pagination. Default: 0.
+            status: Filter by job status. Valid values:
+                - "QUEUED": Job is waiting to run
+                - "RUNNING": Job is currently executing
+                - "DONE": Job completed successfully
+                - "ERROR": Job failed with an error
+                - "CANCELLED": Job was cancelled
+            created_after: Filter jobs created after this timestamp.
+                Format: ISO 8601 (e.g., "2024-01-01T00:00:00Z")
+            **kwargs: Additional query parameters for advanced filtering.
 
         Returns:
-            List[Job]: jobs
-        """
-        return self._client.jobs(
-            function=function, **{**kwargs, **{"filter": self.PRE_FILTER_KEYWORD}}
-        )
-
-    def provider_jobs(self, function: QiskitFunction, **kwargs) -> List[Job]:
-        """List of jobs created in this provider and function.
-
-        Args:
-            function (QiskitFunction): Function object.
-            limit (int, optional): Maximum number of jobs to return. Defaults to 10.
-            offset (int, optional): Number of jobs to skip. Defaults to 0.
-            status (str, optional): Filter by job status.
-            created_after (str, optional): Filter jobs created after this timestamp.
-            **kwargs: Additional query parameters.
-
+            List[Job]: List of Job objects for the specified provider and function.
+            
         Raises:
-            QiskitServerlessException: validation exception
-
-        Returns:
-            [Job] : list of jobs
+            QiskitServerlessException: If the function doesn't have an associated provider.
+            
+        Example:
+            Get provider jobs for a function:
+            
+            >>> catalog = QiskitFunctionsCatalog()
+            >>> my_function = catalog.load("my-function")
+            >>> jobs = catalog.provider_jobs(my_function, limit=10)
+            
+            Get completed provider jobs:
+            
+            >>> jobs = catalog.provider_jobs(
+            ...     my_function,
+            ...     status="DONE",
+            ...     limit=20
+            ... )
         """
-        return self._client.provider_jobs(function, **kwargs)
+        params = {
+            **kwargs,
+            "limit": limit,
+            "offset": offset,
+        }
+        if status is not None:
+            params["status"] = status
+        if created_after is not None:
+            params["created_after"] = created_after
+        return self._client.provider_jobs(function, **params)
 
     def job(self, job_id: str) -> Optional[Job]:
         """Returns job by id.
