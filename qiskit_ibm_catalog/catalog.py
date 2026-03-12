@@ -101,27 +101,27 @@ class QiskitFunctionsCatalog:
         **kwargs,
     ) -> List[QiskitFunction]:
         """Returns a list of available qiskit functions in catalog.
-        
+
         Args:
             limit: Maximum number of functions to return.
             offset: Number of functions to skip for pagination.
             **kwargs: Additional query parameters for advanced filtering.
-        
+
         Returns:
             List[QiskitFunction]: List of qiskit functions available in the catalog.
-            
+
         Example:
             Get all catalog functions:
-            
+
             >>> catalog = QiskitFunctionsCatalog()
             >>> functions = catalog.list()
-            
+
             Get first 10 functions:
-            
+
             >>> functions = catalog.list(limit=10)
-            
+
             Get next page of functions:
-            
+
             >>> functions = catalog.list(limit=10, offset=10)
         """
         params = {**kwargs, "filter": self.PRE_FILTER_KEYWORD}
@@ -142,7 +142,7 @@ class QiskitFunctionsCatalog:
         **kwargs,
     ) -> List[Job]:
         """Returns list of jobs from the catalog.
-        
+
         Args:
             function: Filter jobs by the function that created them.
             limit: Maximum number of jobs to return. Default: 10.
@@ -156,32 +156,32 @@ class QiskitFunctionsCatalog:
             created_after: Filter jobs created after this timestamp.
                 Format: ISO 8601 (e.g., "2024-01-01T00:00:00Z")
             **kwargs: Additional query parameters for advanced filtering.
-        
+
         Returns:
             List[Job]: List of Job objects matching the specified criteria.
-            
+
         Example:
             Get the 5 most recent jobs:
-            
+
             >>> catalog = QiskitFunctionsCatalog()
             >>> jobs = catalog.jobs(limit=5)
-            
+
             Get completed jobs:
-            
+
             >>> jobs = catalog.jobs(status="DONE", limit=10)
-            
+
             Get jobs from a specific function:
-            
+
             >>> my_function = catalog.load("my-function")
             >>> jobs = catalog.jobs(function=my_function, limit=20)
-            
+
             Get jobs created after a specific date:
-            
+
             >>> jobs = catalog.jobs(
             ...     created_after="2024-01-01T00:00:00Z",
             ...     status="DONE"
             ... )
-        
+
         Note:
             The 'filter' parameter is automatically set to "catalog" to ensure
             only catalog jobs are returned. This cannot be overridden.
@@ -226,19 +226,19 @@ class QiskitFunctionsCatalog:
 
         Returns:
             List[Job]: List of Job objects for the specified provider and function.
-            
+
         Raises:
             QiskitServerlessException: If the function doesn't have an associated provider.
-            
+
         Example:
             Get provider jobs for a function:
-            
+
             >>> catalog = QiskitFunctionsCatalog()
             >>> my_function = catalog.load("my-function")
             >>> jobs = catalog.provider_jobs(my_function, limit=10)
-            
+
             Get completed provider jobs:
-            
+
             >>> jobs = catalog.provider_jobs(
             ...     my_function,
             ...     status="DONE",
