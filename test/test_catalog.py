@@ -93,7 +93,6 @@ class TestCatalog(TestCase):
         assert isinstance(jobs[0], Job)
         assert jobs[0].job_id == "42"
 
-
     @mock.patch.object(IBMServerlessClient, "function")
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
@@ -194,9 +193,7 @@ class TestCatalog(TestCase):
 
         result = catalog.provider_jobs(function=test_function, limit=5, offset=10)
 
-        provider_jobs_mock.assert_called_once_with(
-            test_function, limit=5, offset=10
-        )
+        provider_jobs_mock.assert_called_once_with(test_function, limit=5, offset=10)
         assert result == mock_jobs
 
     @mock.patch.object(IBMServerlessClient, "files")
@@ -299,9 +296,7 @@ class TestCatalog(TestCase):
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
-    def test_provider_file_upload_method(
-        self, _verify_mock, provider_file_upload_mock
-    ):
+    def test_provider_file_upload_method(self, _verify_mock, provider_file_upload_mock):
         """Tests that provider_file_upload() forwards parameters correctly."""
         catalog = QiskitFunctionsCatalog(token="token", instance="instance")
         provider_file_upload_mock.return_value = None
@@ -335,9 +330,7 @@ class TestCatalog(TestCase):
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
-    def test_provider_file_delete_method(
-        self, _verify_mock, provider_file_delete_mock
-    ):
+    def test_provider_file_delete_method(self, _verify_mock, provider_file_delete_mock):
         """Tests that provider_file_delete() forwards parameters correctly."""
         catalog = QiskitFunctionsCatalog(token="token", instance="instance")
         provider_file_delete_mock.return_value = None

@@ -106,7 +106,6 @@ class TestServerless(TestCase):
         assert isinstance(jobs[0], Job)
         assert jobs[0].job_id == "42"
 
-
     @mock.patch.object(IBMServerlessClient, "upload")
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
@@ -350,9 +349,7 @@ class TestServerless(TestCase):
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
-    def test_provider_file_upload_method(
-        self, _verify_mock, provider_file_upload_mock
-    ):
+    def test_provider_file_upload_method(self, _verify_mock, provider_file_upload_mock):
         """Tests that provider_file_upload() forwards parameters correctly."""
         serverless = QiskitServerless(
             token="token", instance="instance", host="http://host"
@@ -390,9 +387,7 @@ class TestServerless(TestCase):
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
-    def test_provider_file_delete_method(
-        self, _verify_mock, provider_file_delete_mock
-    ):
+    def test_provider_file_delete_method(self, _verify_mock, provider_file_delete_mock):
         """Tests that provider_file_delete() forwards parameters correctly."""
         serverless = QiskitServerless(
             token="token", instance="instance", host="http://host"
