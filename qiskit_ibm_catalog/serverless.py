@@ -125,19 +125,20 @@ class QiskitServerless:
         Returns:
             List[QiskitFunction]: List of functions uploaded by the user.
 
-        Example:
-            Get all user functions:
+        Example::
 
-            >>> serverless = QiskitServerless()
-            >>> functions = serverless.list()
+            # Get all user functions:
 
-            Get first 10 functions:
+            serverless = QiskitServerless()
+            functions = serverless.list()
 
-            >>> functions = serverless.list(limit=10)
+            # Get first 10 functions:
 
-            Get next page of functions:
+            functions = serverless.list(limit=10)
 
-            >>> functions = serverless.list(limit=10, offset=10)
+            # Get next page of functions:
+
+            functions = serverless.list(limit=10, offset=10)
         """
         params = {**kwargs, "filter": self.PRE_FILTER_KEYWORD}
         if limit is not None:
@@ -175,27 +176,28 @@ class QiskitServerless:
         Returns:
             List[Job]: List of Job objects matching the specified criteria.
 
-        Example:
-            Get the 5 most recent jobs:
+        Example::
 
-            >>> serverless = QiskitServerless()
-            >>> jobs = serverless.jobs(limit=5)
+            # Get the 5 most recent jobs:
 
-            Get completed jobs:
+            serverless = QiskitServerless()
+            jobs = serverless.jobs(limit=5)
 
-            >>> jobs = serverless.jobs(status="DONE", limit=10)
+            # Get completed jobs:
 
-            Get jobs from a specific function:
+            jobs = serverless.jobs(status="DONE", limit=10)
 
-            >>> my_function = serverless.load("my-function")
-            >>> jobs = serverless.jobs(function=my_function, limit=20)
+            # Get jobs from a specific function:
 
-            Get jobs created after a specific date:
+            my_function = serverless.load("my-function")
+            jobs = serverless.jobs(function=my_function, limit=20)
 
-            >>> jobs = serverless.jobs(
-            ...     created_after="2024-01-01T00:00:00Z",
-            ...     status="DONE"
-            ... )
+            # Get jobs created after a specific date:
+
+            jobs = serverless.jobs(
+                created_after="2024-01-01T00:00:00Z",
+                status="DONE"
+            )
 
         Note:
             The 'filter' parameter is automatically set to "serverless" to ensure
@@ -245,20 +247,21 @@ class QiskitServerless:
         Raises:
             QiskitServerlessException: If the function doesn't have an associated provider.
 
-        Example:
-            Get provider jobs for a function:
+        Example::
 
-            >>> serverless = QiskitServerless()
-            >>> my_function = serverless.load("my-function")
-            >>> jobs = serverless.provider_jobs(my_function, limit=10)
+            # Get provider jobs for a function:
 
-            Get completed provider jobs:
+            serverless = QiskitServerless()
+            my_function = serverless.load("my-function")
+            jobs = serverless.provider_jobs(my_function, limit=10)
 
-            >>> jobs = serverless.provider_jobs(
-            ...     my_function,
-            ...     status="DONE",
-            ...     limit=20
-            ... )
+            # Get completed provider jobs:
+
+            jobs = serverless.provider_jobs(
+                my_function,
+                status="DONE",
+                limit=20
+            )
         """
         params = {
             **kwargs,

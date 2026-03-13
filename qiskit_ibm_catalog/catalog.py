@@ -110,19 +110,19 @@ class QiskitFunctionsCatalog:
         Returns:
             List[QiskitFunction]: List of qiskit functions available in the catalog.
 
-        Example:
-            Get all catalog functions:
+        Example::
+            # Get all catalog functions:
 
-            >>> catalog = QiskitFunctionsCatalog()
-            >>> functions = catalog.list()
+            catalog = QiskitFunctionsCatalog()
+            functions = catalog.list()
 
-            Get first 10 functions:
+            # Get first 10 functions:
 
-            >>> functions = catalog.list(limit=10)
+            functions = catalog.list(limit=10)
 
-            Get next page of functions:
+            # Get next page of functions:
 
-            >>> functions = catalog.list(limit=10, offset=10)
+            functions = catalog.list(limit=10, offset=10)
         """
         params = {**kwargs, "filter": self.PRE_FILTER_KEYWORD}
         if limit is not None:
@@ -131,7 +131,7 @@ class QiskitFunctionsCatalog:
             params["offset"] = offset
         return self._client.functions(**params)
 
-    def jobs(
+    def jobs(  # pylint: disable=too-many-arguments
         self,
         function: Optional[QiskitFunction] = None,
         *,
@@ -160,27 +160,28 @@ class QiskitFunctionsCatalog:
         Returns:
             List[Job]: List of Job objects matching the specified criteria.
 
-        Example:
-            Get the 5 most recent jobs:
+        Example::
 
-            >>> catalog = QiskitFunctionsCatalog()
-            >>> jobs = catalog.jobs(limit=5)
+            # Get the 5 most recent jobs:
 
-            Get completed jobs:
+            catalog = QiskitFunctionsCatalog()
+            jobs = catalog.jobs(limit=5)
 
-            >>> jobs = catalog.jobs(status="DONE", limit=10)
+            # Get completed jobs:
 
-            Get jobs from a specific function:
+            jobs = catalog.jobs(status="DONE", limit=10)
 
-            >>> my_function = catalog.load("my-function")
-            >>> jobs = catalog.jobs(function=my_function, limit=20)
+            # Get jobs from a specific function:
 
-            Get jobs created after a specific date:
+            my_function = catalog.load("my-function")
+            jobs = catalog.jobs(function=my_function, limit=20)
 
-            >>> jobs = catalog.jobs(
-            ...     created_after="2024-01-01T00:00:00Z",
-            ...     status="DONE"
-            ... )
+            # Get jobs created after a specific date:
+
+            jobs = catalog.jobs(
+                 created_after="2024-01-01T00:00:00Z",
+                 status="DONE"
+                )
 
         Note:
             The 'filter' parameter is automatically set to "catalog" to ensure
@@ -198,7 +199,7 @@ class QiskitFunctionsCatalog:
             params["created_after"] = created_after
         return self._client.jobs(function=function, **params)
 
-    def provider_jobs(
+    def provider_jobs(  # pylint: disable=too-many-arguments
         self,
         function: QiskitFunction,
         *,
@@ -230,20 +231,21 @@ class QiskitFunctionsCatalog:
         Raises:
             QiskitServerlessException: If the function doesn't have an associated provider.
 
-        Example:
-            Get provider jobs for a function:
+        Example::
 
-            >>> catalog = QiskitFunctionsCatalog()
-            >>> my_function = catalog.load("my-function")
-            >>> jobs = catalog.provider_jobs(my_function, limit=10)
+            # Get provider jobs for a function:
 
-            Get completed provider jobs:
+            catalog = QiskitFunctionsCatalog()
+            my_function = catalog.load("my-function")
+            jobs = catalog.provider_jobs(my_function, limit=10)
 
-            >>> jobs = catalog.provider_jobs(
-            ...     my_function,
-            ...     status="DONE",
-            ...     limit=20
-            ... )
+            # Get completed provider jobs:
+
+            jobs = catalog.provider_jobs(
+                my_function,
+                status="DONE",
+                limit=20
+            )
         """
         params = {
             **kwargs,
