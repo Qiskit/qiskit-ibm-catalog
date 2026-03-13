@@ -108,40 +108,171 @@ class QiskitServerless:
         """
         return self._client.function(title=title, provider=provider)
 
-    def list(self, **kwargs) -> List[QiskitFunction]:
+    def list(
+        self,
+        *,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+        **kwargs,
+    ) -> List[QiskitFunction]:
         """Returns list of functions uploaded by user.
 
-        Returns:
-            List[QiskitFunction]: list of functions.
-        """
-        return self._client.functions(
-            **{**kwargs, **{"filter": self.PRE_FILTER_KEYWORD}}
-        )
-
-    def jobs(self, function: Optional[QiskitFunction] = None, **kwargs) -> List[Job]:
-        """Returns list of jobs.
+        Args:
+            limit: Maximum number of functions to return.
+            offset: Number of functions to skip for pagination.
+            **kwargs: Additional query parameters for advanced filtering.
 
         Returns:
-            List[Job]: jobs
-        """
-        return self._client.jobs(
-            function=function, **{**kwargs, **{"filter": self.PRE_FILTER_KEYWORD}}
-        )
+            List[QiskitFunction]: List of functions uploaded by the user.
 
-    def provider_jobs(self, function: QiskitFunction, **kwargs) -> List[Job]:
-        """List of jobs created in this provider and function.
+        Example::
+
+            # Get all user functions:
+
+            serverless = QiskitServerless()
+            functions = serverless.list()
+
+            # Get first 10 functions:
+
+            functions = serverless.list(limit=10)
+
+            # Get next page of functions:
+
+            functions = serverless.list(limit=10, offset=10)
+        """
+        params = {**kwargs, "filter": self.PRE_FILTER_KEYWORD}
+        if limit is not None:
+            params["limit"] = limit
+        if offset is not None:
+            params["offset"] = offset
+        return self._client.functions(**params)
+
+    def jobs(
+        self,
+        function: Optional[QiskitFunction] = None,
+        *,
+        limit: int = 10,
+        offset: int = 0,
+        status: Optional[str] = None,
+        created_after: Optional[str] = None,
+        **kwargs,
+    ) -> List[Job]:
+        """Returns list of jobs from serverless.
 
         Args:
-            function: QiskitFunction
-            **kwargs: additional parameters for the request
-
-        Raises:
-            QiskitServerlessException: validation exception
+            function: Filter jobs by the function that created them.
+            limit: Maximum number of jobs to return. Default: 10.
+            offset: Number of jobs to skip for pagination. Default: 0.
+            status: Filter by job status. Valid values:
+                - "QUEUED": Job is waiting to run
+                - "RUNNING": Job is currently executing
+                - "DONE": Job completed successfully
+                - "ERROR": Job failed with an error
+                - "CANCELLED": Job was cancelled
+            created_after: Filter jobs created after this timestamp.
+                Format: ISO 8601 (e.g., "2024-01-01T00:00:00Z")
+            **kwargs: Additional query parameters for advanced filtering.
 
         Returns:
-            [Job] : list of jobs
+            List[Job]: List of Job objects matching the specified criteria.
+
+        Example::
+
+            # Get the 5 most recent jobs:
+
+            serverless = QiskitServerless()
+            jobs = serverless.jobs(limit=5)
+
+            # Get completed jobs:
+
+            jobs = serverless.jobs(status="DONE", limit=10)
+
+            # Get jobs from a specific function:
+
+            my_function = serverless.load("my-function")
+            jobs = serverless.jobs(function=my_function, limit=20)
+
+            # Get jobs created after a specific date:
+
+            jobs = serverless.jobs(
+                created_after="2024-01-01T00:00:00Z",
+                status="DONE"
+            )
+
+        Note:
+            The 'filter' parameter is automatically set to "serverless" to ensure
+            only serverless jobs are returned. This cannot be overridden.
         """
-        return self._client.provider_jobs(function, **kwargs)
+        params = {
+            **kwargs,
+            "limit": limit,
+            "offset": offset,
+            "filter": self.PRE_FILTER_KEYWORD,
+        }
+        if status is not None:
+            params["status"] = status
+        if created_after is not None:
+            params["created_after"] = created_after
+        return self._client.jobs(function=function, **params)
+
+    def provider_jobs(
+        self,
+        function: QiskitFunction,
+        *,
+        limit: int = 10,
+        offset: int = 0,
+        status: Optional[str] = None,
+        created_after: Optional[str] = None,
+        **kwargs,
+    ) -> List[Job]:
+        """List of jobs created by the provider for this function.
+
+        Args:
+            function: Function object to filter jobs by.
+            limit: Maximum number of jobs to return. Default: 10.
+            offset: Number of jobs to skip for pagination. Default: 0.
+            status: Filter by job status. Valid values:
+                - "QUEUED": Job is waiting to run
+                - "RUNNING": Job is currently executing
+                - "DONE": Job completed successfully
+                - "ERROR": Job failed with an error
+                - "CANCELLED": Job was cancelled
+            created_after: Filter jobs created after this timestamp.
+                Format: ISO 8601 (e.g., "2024-01-01T00:00:00Z")
+            **kwargs: Additional query parameters for advanced filtering.
+
+        Returns:
+            List[Job]: List of Job objects for the specified provider and function.
+
+        Raises:
+            QiskitServerlessException: If the function doesn't have an associated provider.
+
+        Example::
+
+            # Get provider jobs for a function:
+
+            serverless = QiskitServerless()
+            my_function = serverless.load("my-function")
+            jobs = serverless.provider_jobs(my_function, limit=10)
+
+            # Get completed provider jobs:
+
+            jobs = serverless.provider_jobs(
+                my_function,
+                status="DONE",
+                limit=20
+            )
+        """
+        params = {
+            **kwargs,
+            "limit": limit,
+            "offset": offset,
+        }
+        if status is not None:
+            params["status"] = status
+        if created_after is not None:
+            params["created_after"] = created_after
+        return self._client.provider_jobs(function, **params)
 
     def job(self, job_id: str) -> Optional[Job]:
         """Returns job by id.
