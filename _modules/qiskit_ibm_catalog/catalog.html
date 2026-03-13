@@ -337,52 +337,170 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">provider</span><span class="o">=</span><span class="n">provider</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QiskitFunction</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QiskitFunction</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of available qiskit functions in catalog.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            List[QiskitFunction]: list of qiskit functions</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">functions</span><span class="p">(</span>
-            <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">PRE_FILTER_KEYWORD</span><span class="p">}}</span>
-        <span class="p">)</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QiskitFunction</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Job</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns list of jobs.</span>
-
 <span class="sd">        Args:</span>
-<span class="sd">            function (QiskitFunction): The function that created the jobs we want to retrieve.</span>
-<span class="sd">            limit (int, optional): Maximum number of jobs to return. Defaults to 10.</span>
-<span class="sd">            offset (int, optional): Number of jobs to skip. Defaults to 0.</span>
-<span class="sd">            status (str, optional): Filter by job status.</span>
-<span class="sd">            created_after (str, optional): Filter jobs created after this timestamp.</span>
-<span class="sd">            **kwargs: Additional query parameters.</span>
+<span class="sd">            limit: Maximum number of functions to return.</span>
+<span class="sd">            offset: Number of functions to skip for pagination.</span>
+<span class="sd">            **kwargs: Additional query parameters for advanced filtering.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            List[Job]: jobs</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">jobs</span><span class="p">(</span>
-            <span class="n">function</span><span class="o">=</span><span class="n">function</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">PRE_FILTER_KEYWORD</span><span class="p">}}</span>
-        <span class="p">)</span>
+<span class="sd">            List[QiskitFunction]: List of qiskit functions available in the catalog.</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">provider_jobs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Job</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;List of jobs created in this provider and function.</span>
+<span class="sd">        Example::</span>
+<span class="sd">            # Get all catalog functions:</span>
+
+<span class="sd">            catalog = QiskitFunctionsCatalog()</span>
+<span class="sd">            functions = catalog.list()</span>
+
+<span class="sd">            # Get first 10 functions:</span>
+
+<span class="sd">            functions = catalog.list(limit=10)</span>
+
+<span class="sd">            # Get next page of functions:</span>
+
+<span class="sd">            functions = catalog.list(limit=10, offset=10)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">PRE_FILTER_KEYWORD</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;limit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit</span>
+        <span class="k">if</span> <span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">offset</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">functions</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">jobs</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">function</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">QiskitFunction</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">created_after</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Job</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns list of jobs from the catalog.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            function (QiskitFunction): Function object.</span>
-<span class="sd">            limit (int, optional): Maximum number of jobs to return. Defaults to 10.</span>
-<span class="sd">            offset (int, optional): Number of jobs to skip. Defaults to 0.</span>
-<span class="sd">            status (str, optional): Filter by job status.</span>
-<span class="sd">            created_after (str, optional): Filter jobs created after this timestamp.</span>
-<span class="sd">            **kwargs: Additional query parameters.</span>
+<span class="sd">            function: Filter jobs by the function that created them.</span>
+<span class="sd">            limit: Maximum number of jobs to return. Default: 10.</span>
+<span class="sd">            offset: Number of jobs to skip for pagination. Default: 0.</span>
+<span class="sd">            status: Filter by job status. Valid values:</span>
+<span class="sd">                - &quot;QUEUED&quot;: Job is waiting to run</span>
+<span class="sd">                - &quot;RUNNING&quot;: Job is currently executing</span>
+<span class="sd">                - &quot;DONE&quot;: Job completed successfully</span>
+<span class="sd">                - &quot;ERROR&quot;: Job failed with an error</span>
+<span class="sd">                - &quot;CANCELLED&quot;: Job was cancelled</span>
+<span class="sd">            created_after: Filter jobs created after this timestamp.</span>
+<span class="sd">                Format: ISO 8601 (e.g., &quot;2024-01-01T00:00:00Z&quot;)</span>
+<span class="sd">            **kwargs: Additional query parameters for advanced filtering.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Job]: List of Job objects matching the specified criteria.</span>
+
+<span class="sd">        Example::</span>
+
+<span class="sd">            # Get the 5 most recent jobs:</span>
+
+<span class="sd">            catalog = QiskitFunctionsCatalog()</span>
+<span class="sd">            jobs = catalog.jobs(limit=5)</span>
+
+<span class="sd">            # Get completed jobs:</span>
+
+<span class="sd">            jobs = catalog.jobs(status=&quot;DONE&quot;, limit=10)</span>
+
+<span class="sd">            # Get jobs from a specific function:</span>
+
+<span class="sd">            my_function = catalog.load(&quot;my-function&quot;)</span>
+<span class="sd">            jobs = catalog.jobs(function=my_function, limit=20)</span>
+
+<span class="sd">            # Get jobs created after a specific date:</span>
+
+<span class="sd">            jobs = catalog.jobs(</span>
+<span class="sd">                 created_after=&quot;2024-01-01T00:00:00Z&quot;,</span>
+<span class="sd">                 status=&quot;DONE&quot;</span>
+<span class="sd">                )</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            The &#39;filter&#39; parameter is automatically set to &quot;catalog&quot; to ensure</span>
+<span class="sd">            only catalog jobs are returned. This cannot be overridden.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">PRE_FILTER_KEYWORD</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span>
+        <span class="k">if</span> <span class="n">created_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;created_after&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">created_after</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">jobs</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">function</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">provider_jobs</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+        <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="n">status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">created_after</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Job</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List of jobs created by the provider for this function.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            function: Function object to filter jobs by.</span>
+<span class="sd">            limit: Maximum number of jobs to return. Default: 10.</span>
+<span class="sd">            offset: Number of jobs to skip for pagination. Default: 0.</span>
+<span class="sd">            status: Filter by job status. Valid values:</span>
+<span class="sd">                - &quot;QUEUED&quot;: Job is waiting to run</span>
+<span class="sd">                - &quot;RUNNING&quot;: Job is currently executing</span>
+<span class="sd">                - &quot;DONE&quot;: Job completed successfully</span>
+<span class="sd">                - &quot;ERROR&quot;: Job failed with an error</span>
+<span class="sd">                - &quot;CANCELLED&quot;: Job was cancelled</span>
+<span class="sd">            created_after: Filter jobs created after this timestamp.</span>
+<span class="sd">                Format: ISO 8601 (e.g., &quot;2024-01-01T00:00:00Z&quot;)</span>
+<span class="sd">            **kwargs: Additional query parameters for advanced filtering.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Job]: List of Job objects for the specified provider and function.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            QiskitServerlessException: validation exception</span>
+<span class="sd">            QiskitServerlessException: If the function doesn&#39;t have an associated provider.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            [Job] : list of jobs</span>
+<span class="sd">        Example::</span>
+
+<span class="sd">            # Get provider jobs for a function:</span>
+
+<span class="sd">            catalog = QiskitFunctionsCatalog()</span>
+<span class="sd">            my_function = catalog.load(&quot;my-function&quot;)</span>
+<span class="sd">            jobs = catalog.provider_jobs(my_function, limit=10)</span>
+
+<span class="sd">            # Get completed provider jobs:</span>
+
+<span class="sd">            jobs = catalog.provider_jobs(</span>
+<span class="sd">                my_function,</span>
+<span class="sd">                status=&quot;DONE&quot;,</span>
+<span class="sd">                limit=20</span>
+<span class="sd">            )</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">provider_jobs</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span>
+        <span class="k">if</span> <span class="n">created_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;created_after&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">created_after</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">provider_jobs</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Job</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns job by id.</span>

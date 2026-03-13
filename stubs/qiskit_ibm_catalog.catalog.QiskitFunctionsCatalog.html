@@ -325,10 +325,10 @@ be retrieved from the user’s local IBM Quantum account config file.</p>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">job</span></code>(job_id)</p></td>
 <td><p>Returns job by id.</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">jobs</span></code>([function])</p></td>
-<td><p>Returns list of jobs.</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">jobs</span></code>([function, limit, offset, status, ...])</p></td>
+<td><p>Returns list of jobs from the catalog.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code>(**kwargs)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code>(*[, limit, offset])</p></td>
 <td><p>Returns a list of available qiskit functions in catalog.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(title[, provider])</p></td>
@@ -346,8 +346,8 @@ be retrieved from the user’s local IBM Quantum account config file.</p>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">provider_files</span></code>(function)</p></td>
 <td><p>Returns the list of files available for the provider in the Qiskit Function folder.</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">provider_jobs</span></code>(function, **kwargs)</p></td>
-<td><p>List of jobs created in this provider and function.</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">provider_jobs</span></code>(function, *[, limit, offset, ...])</p></td>
+<td><p>List of jobs created by the provider for this function.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">runtime_jobs</span></code>(job_id[, runtime_session])</p></td>
 <td><p>Returns list of qiskit runtime job ids associated to the catalog job id and optionally filtered by session.</p></td>
