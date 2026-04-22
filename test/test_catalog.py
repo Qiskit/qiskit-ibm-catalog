@@ -17,6 +17,7 @@ import pytest
 
 from qiskit_serverless import IBMServerlessClient
 from qiskit_serverless.core import Job, QiskitFunction
+from qiskit_serverless.core.job_event import JobEvent
 from qiskit_ibm_catalog import QiskitFunctionsCatalog
 
 
@@ -179,6 +180,29 @@ class TestCatalog(TestCase):
 
         runtime_sessions_mock.assert_called_once_with("test-job-id")
         assert result == mock_session_ids
+
+    @mock.patch.object(IBMServerlessClient, "events")
+    @mock.patch(
+        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
+    )
+    def test_events_method(self, _verify_mock, events_mock):
+        """Tests that events() forwards job_id and kwargs correctly."""
+        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        mock_events = [
+            JobEvent(
+                event_type="STATUS_CHANGE",
+                origin="API",
+                context="SET_SUB_STATUS",
+                created="2024-01-01T00:00:00Z",
+                data={"status": "RUNNING"},
+            )
+        ]
+        events_mock.return_value = mock_events
+
+        result = catalog.events(job_id="test-job-id", event_type="STATUS_CHANGE")
+
+        events_mock.assert_called_once_with("test-job-id", event_type="STATUS_CHANGE")
+        assert result == mock_events
 
     @mock.patch.object(IBMServerlessClient, "provider_jobs")
     @mock.patch(
