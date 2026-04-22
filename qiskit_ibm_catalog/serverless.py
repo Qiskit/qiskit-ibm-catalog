@@ -28,6 +28,7 @@ import warnings
 from qiskit_serverless import IBMServerlessClient
 from qiskit_serverless.core import Job, QiskitFunction
 from qiskit_serverless.core.function import RunnableQiskitFunction
+from qiskit_serverless.core.job_event import JobEvent
 
 
 class QiskitServerless:
@@ -320,6 +321,18 @@ class QiskitServerless:
             List[str]: session ids
         """
         return self._client.runtime_sessions(job_id)
+
+    def events(self, job_id: str, **kwargs) -> List[JobEvent]:
+        """Returns events of the job.
+
+        Args:
+            job_id (str): job id
+            **kwargs: Additional query parameters for filtering.
+
+        Returns:
+            List[JobEvent]: list of job events
+        """
+        return self._client.events(job_id, **kwargs)
 
     def files(self, function: QiskitFunction) -> List[str]:
         """Returns the list of files available for the user in the Qiskit Function folder."""
