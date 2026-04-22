@@ -14,6 +14,7 @@
    .. autosummary::
    
       ~QiskitServerless.__init__
+      ~QiskitServerless.events
       ~QiskitServerless.file_delete
       ~QiskitServerless.file_download
       ~QiskitServerless.file_upload
