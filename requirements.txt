@@ -1,2 +1,2 @@
 importlib-metadata>=8.7.1
-qiskit-serverless~=0.31.0
+qiskit-serverless~=0.32.0
