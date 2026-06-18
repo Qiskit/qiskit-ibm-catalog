@@ -400,3 +400,59 @@ class TestCatalog(TestCase):
             name="test-name",
             overwrite=True,
         )
+
+    @mock.patch.object(IBMServerlessClient, "backends", create=True)
+    @mock.patch(
+        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
+    )
+    def test_backends_method(self, _verify_mock, backends_mock):
+        """Tests that backends() forwards keyword arguments correctly."""
+        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        backends_mock.return_value = ["backend1", "backend2"]
+
+        result = catalog.backends(min_num_qubits=5)
+
+        backends_mock.assert_called_once_with(min_num_qubits=5)
+        assert result == ["backend1", "backend2"]
+
+    @mock.patch.object(IBMServerlessClient, "backend", create=True)
+    @mock.patch(
+        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
+    )
+    def test_backend_method(self, _verify_mock, backend_mock):
+        """Tests that backend() forwards the name correctly."""
+        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        backend_mock.return_value = "backend1"
+
+        result = catalog.backend("backend1")
+
+        backend_mock.assert_called_once_with("backend1")
+        assert result == "backend1"
+
+    @mock.patch.object(IBMServerlessClient, "least_busy", create=True)
+    @mock.patch(
+        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
+    )
+    def test_least_busy_method(self, _verify_mock, least_busy_mock):
+        """Tests that least_busy() forwards keyword arguments correctly."""
+        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        least_busy_mock.return_value = "backend1"
+
+        result = catalog.least_busy(min_num_qubits=5)
+
+        least_busy_mock.assert_called_once_with(min_num_qubits=5)
+        assert result == "backend1"
+
+    @mock.patch.object(IBMServerlessClient, "usage", create=True)
+    @mock.patch(
+        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
+    )
+    def test_usage_method(self, _verify_mock, usage_mock):
+        """Tests that usage() delegates to the client."""
+        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        usage_mock.return_value = {"usage": 42}
+
+        result = catalog.usage()
+
+        usage_mock.assert_called_once_with()
+        assert result == {"usage": 42}
