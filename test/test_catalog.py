@@ -410,9 +410,9 @@ class TestCatalog(TestCase):
         catalog = QiskitFunctionsCatalog(token="token", instance="instance")
         backends_mock.return_value = ["backend1", "backend2"]
 
-        result = catalog.backends(min_num_qubits=5)
+        result = catalog.backends(min_num_qubits=127)
 
-        backends_mock.assert_called_once_with(min_num_qubits=5)
+        backends_mock.assert_called_once_with(min_num_qubits=127)
         assert result == ["backend1", "backend2"]
 
     @mock.patch.object(IBMServerlessClient, "backend", create=True)
@@ -438,9 +438,9 @@ class TestCatalog(TestCase):
         catalog = QiskitFunctionsCatalog(token="token", instance="instance")
         least_busy_mock.return_value = "backend1"
 
-        result = catalog.least_busy(min_num_qubits=5)
+        result = catalog.least_busy(min_num_qubits=127)
 
-        least_busy_mock.assert_called_once_with(min_num_qubits=5)
+        least_busy_mock.assert_called_once_with(min_num_qubits=127)
         assert result == "backend1"
 
     @mock.patch.object(IBMServerlessClient, "usage", create=True)
