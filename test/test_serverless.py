@@ -12,6 +12,8 @@
 
 """Tests for QiskitServerless class."""
 
+# pylint: disable=duplicate-code
+
 from unittest import TestCase, mock
 import pytest
 
@@ -21,7 +23,7 @@ from qiskit_serverless.core.job_event import JobEvent
 from qiskit_ibm_catalog import QiskitServerless
 
 
-class TestServerless(TestCase):
+class TestServerless(TestCase):  # pylint: disable=too-many-public-methods
     """TestServerless."""
 
     _LIST_INSTANCES = "qiskit_ibm_runtime.accounts.account.CloudAccount.list_instances"
@@ -64,7 +66,9 @@ class TestServerless(TestCase):
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
-    def test_basic_functions(self, _verify_mock, jobs_mock, functions_list_mock, mock_list_instances):
+    def test_basic_functions(
+        self, _verify_mock, jobs_mock, functions_list_mock, mock_list_instances
+    ):
         """Tests basic function of serverless client."""
         # Mock list of instance crns in the IBM Cloud Global
         mock_list_instances.return_value = [
@@ -105,7 +109,9 @@ class TestServerless(TestCase):
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
-    def test_jobs_with_function_filter(self, _verify_mock, jobs_mock, mock_list_instances):
+    def test_jobs_with_function_filter(
+        self, _verify_mock, jobs_mock, mock_list_instances
+    ):
         """Tests that 'function' is forwarded and 'serverless' filter is enforced."""
         # Mock list of instance crns in the IBM Cloud Global
         mock_list_instances.return_value = [
@@ -234,7 +240,9 @@ class TestServerless(TestCase):
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
-    def test_get_job_by_id_deprecation_warning(self, _verify_mock, job_mock, mock_list_instances):
+    def test_get_job_by_id_deprecation_warning(
+        self, _verify_mock, job_mock, mock_list_instances
+    ):
         """Tests that get_job_by_id() shows deprecation warning."""
         # Mock list of instance crns in the IBM Cloud Global
         mock_list_instances.return_value = [
@@ -270,7 +278,9 @@ class TestServerless(TestCase):
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
-    def test_runtime_jobs_method(self, _verify_mock, runtime_jobs_mock, mock_list_instances):
+    def test_runtime_jobs_method(
+        self, _verify_mock, runtime_jobs_mock, mock_list_instances
+    ):
         """Tests that runtime_jobs() forwards parameters correctly."""
         # Mock list of instance crns in the IBM Cloud Global
         mock_list_instances.return_value = [
@@ -300,7 +310,9 @@ class TestServerless(TestCase):
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
-    def test_runtime_sessions_method(self, _verify_mock, runtime_sessions_mock, mock_list_instances):
+    def test_runtime_sessions_method(
+        self, _verify_mock, runtime_sessions_mock, mock_list_instances
+    ):
         """Tests that runtime_sessions() forwards job_id correctly."""
         # Mock list of instance crns in the IBM Cloud Global
         mock_list_instances.return_value = [
@@ -364,7 +376,9 @@ class TestServerless(TestCase):
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
-    def test_provider_jobs_method(self, _verify_mock, provider_jobs_mock, mock_list_instances):
+    def test_provider_jobs_method(
+        self, _verify_mock, provider_jobs_mock, mock_list_instances
+    ):
         """Tests that provider_jobs() forwards parameters correctly."""
         # Mock list of instance crns in the IBM Cloud Global
         mock_list_instances.return_value = [
@@ -422,7 +436,9 @@ class TestServerless(TestCase):
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
-    def test_provider_files_method(self, _verify_mock, provider_files_mock, mock_list_instances):
+    def test_provider_files_method(
+        self, _verify_mock, provider_files_mock, mock_list_instances
+    ):
         """Tests that provider_files() forwards function parameter correctly."""
         # Mock list of instance crns in the IBM Cloud Global
         mock_list_instances.return_value = [
@@ -451,7 +467,9 @@ class TestServerless(TestCase):
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
-    def test_file_download_method(self, _verify_mock, file_download_mock, mock_list_instances):
+    def test_file_download_method(
+        self, _verify_mock, file_download_mock, mock_list_instances
+    ):
         """Tests that file_download() forwards all parameters correctly."""
         # Mock list of instance crns in the IBM Cloud Global
         mock_list_instances.return_value = [
@@ -526,7 +544,9 @@ class TestServerless(TestCase):
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
-    def test_file_upload_method(self, _verify_mock, file_upload_mock, mock_list_instances):
+    def test_file_upload_method(
+        self, _verify_mock, file_upload_mock, mock_list_instances
+    ):
         """Tests that file_upload() forwards parameters correctly."""
         # Mock list of instance crns in the IBM Cloud Global
         mock_list_instances.return_value = [
@@ -554,7 +574,9 @@ class TestServerless(TestCase):
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
-    def test_provider_file_upload_method(self, _verify_mock, provider_file_upload_mock, mock_list_instances):
+    def test_provider_file_upload_method(
+        self, _verify_mock, provider_file_upload_mock, mock_list_instances
+    ):
         """Tests that provider_file_upload() forwards parameters correctly."""
         # Mock list of instance crns in the IBM Cloud Global
         mock_list_instances.return_value = [
@@ -586,7 +608,9 @@ class TestServerless(TestCase):
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
-    def test_file_delete_method(self, _verify_mock, file_delete_mock, mock_list_instances):
+    def test_file_delete_method(
+        self, _verify_mock, file_delete_mock, mock_list_instances
+    ):
         """Tests that file_delete() forwards parameters correctly."""
         # Mock list of instance crns in the IBM Cloud Global
         mock_list_instances.return_value = [
@@ -614,7 +638,9 @@ class TestServerless(TestCase):
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
-    def test_provider_file_delete_method(self, _verify_mock, provider_file_delete_mock, mock_list_instances):
+    def test_provider_file_delete_method(
+        self, _verify_mock, provider_file_delete_mock, mock_list_instances
+    ):
         """Tests that provider_file_delete() forwards parameters correctly."""
         # Mock list of instance crns in the IBM Cloud Global
         mock_list_instances.return_value = [
@@ -741,7 +767,9 @@ class TestServerless(TestCase):
     @mock.patch(
         "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
     )
-    def test_least_busy_method(self, _verify_mock, least_busy_mock, mock_list_instances):
+    def test_least_busy_method(
+        self, _verify_mock, least_busy_mock, mock_list_instances
+    ):
         """Tests that least_busy() forwards keyword arguments correctly."""
         # Mock list of instance crns in the IBM Cloud Global
         mock_list_instances.return_value = [
