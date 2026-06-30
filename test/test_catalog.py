@@ -14,7 +14,9 @@
 
 # pylint: disable=duplicate-code
 
+import tempfile
 from unittest import TestCase, mock
+from unittest.mock import patch
 import pytest
 
 from qiskit_serverless import IBMServerlessClient
@@ -22,62 +24,57 @@ from qiskit_serverless.core import Job, QiskitFunction
 from qiskit_serverless.core.job_event import JobEvent
 from qiskit_ibm_catalog import QiskitFunctionsCatalog
 
+_LIST_INSTANCES = "qiskit_ibm_runtime.accounts.account.CloudAccount.list_instances"
+_VERIFY_CREDS = "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
+_CONFIG_FILE = "qiskit_ibm_runtime.accounts.management._DEFAULT_ACCOUNT_CONFIG_JSON_FILE"
+
+_INSTANCE_LIST = [
+    {
+        "crn": "my_instance",
+        "plan": "test_plan",
+        "name": "my_instance",
+        "tags": "test_tags",
+        "pricing_type": "test_pricing_type",
+    }
+]
+
+
+def _make_catalog(mock_file_path, mock_verify, mock_list_instances):
+    """Build a QiskitFunctionsCatalog suitable for unit tests."""
+    mock_list_instances.return_value = _INSTANCE_LIST
+    mock_verify.return_value = None
+    with tempfile.NamedTemporaryFile() as tmp:
+        mock_file_path.return_value = tmp.name
+    return QiskitFunctionsCatalog(token="token", instance="my_instance", channel="ibm_quantum_platform")
+
 
 class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     """TestCatalog."""
 
-    _LIST_INSTANCES = "qiskit_ibm_runtime.accounts.account.CloudAccount.list_instances"
-
-    @mock.patch(_LIST_INSTANCES)
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_authentication(self, _verify_mock, mock_list_instances):
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    def test_authentication(self, mock_file_path, mock_verify, mock_list_instances):
         """Tests authentication of serverless client."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
 
         # pylint: disable=protected-access
         assert catalog._client.token == "token"
-        assert catalog._client.instance == "instance"
+        assert catalog._client.instance == "my_instance"
         # pylint: enable=protected-access
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(
         IBMServerlessClient,
         "functions",
         return_value=[QiskitFunction("the-ultimate-answer")],
     )
-    @mock.patch.object(
-        IBMServerlessClient, "jobs", return_value=[Job("42", mock.MagicMock())]
-    )
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_basic_functions(
-        self, _verify_mock, jobs_mock, functions_list_mock, mock_list_instances
-    ):
+    @mock.patch.object(IBMServerlessClient, "jobs", return_value=[Job("42", mock.MagicMock())])
+    def test_basic_functions(self, jobs_mock, functions_list_mock, mock_file_path, mock_verify, mock_list_instances):
         """Tests basic function of catalog."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
 
         jobs = catalog.jobs(limit=10)
         functions = catalog.list()
@@ -91,28 +88,13 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
         assert len(jobs) == 1
         assert len(functions) == 1
 
-    @mock.patch(_LIST_INSTANCES)
-    @mock.patch.object(
-        IBMServerlessClient, "jobs", return_value=[Job("42", mock.MagicMock())]
-    )
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_jobs_with_function_filter(
-        self, _verify_mock, jobs_mock, mock_list_instances
-    ):
-        """Tests that 'function' is forwarded and 'serverless' filter is enforced."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    @mock.patch.object(IBMServerlessClient, "jobs", return_value=[Job("42", mock.MagicMock())])
+    def test_jobs_with_function_filter(self, jobs_mock, mock_file_path, mock_verify, mock_list_instances):
+        """Tests that 'function' is forwarded and 'catalog' filter is enforced."""
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
 
         my_function = QiskitFunction("my-func")
 
@@ -135,52 +117,28 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
         assert isinstance(jobs[0], Job)
         assert jobs[0].job_id == "42"
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "function")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_load_method(self, _verify_mock, function_mock, mock_list_instances):
+    def test_load_method(self, function_mock, mock_file_path, mock_verify, mock_list_instances):
         """Tests that load() forwards parameters correctly."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_function = mock.MagicMock()
         function_mock.return_value = mock_function
 
         result = catalog.load(title="test-function", provider="test-provider")
 
-        function_mock.assert_called_once_with(
-            title="test-function", provider="test-provider"
-        )
+        function_mock.assert_called_once_with(title="test-function", provider="test-provider")
         assert result == mock_function
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "job")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_job_method(self, _verify_mock, job_mock, mock_list_instances):
+    def test_job_method(self, job_mock, mock_file_path, mock_verify, mock_list_instances):
         """Tests that job() forwards job_id correctly."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_job = Job("test-job-id", mock.MagicMock())
         job_mock.return_value = mock_job
 
@@ -189,26 +147,13 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
         job_mock.assert_called_once_with(job_id="test-job-id")
         assert result == mock_job
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "job")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_get_job_by_id_deprecation_warning(
-        self, _verify_mock, job_mock, mock_list_instances
-    ):
+    def test_get_job_by_id_deprecation_warning(self, job_mock, mock_file_path, mock_verify, mock_list_instances):
         """Tests that get_job_by_id() shows deprecation warning."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_job = Job("test-job-id", mock.MagicMock())
         job_mock.return_value = mock_job
 
@@ -225,56 +170,28 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
         job_mock.assert_called_once_with(job_id="test-job-id")
         assert result == mock_job
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "runtime_jobs")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_runtime_jobs_method(
-        self, _verify_mock, runtime_jobs_mock, mock_list_instances
-    ):
+    def test_runtime_jobs_method(self, runtime_jobs_mock, mock_file_path, mock_verify, mock_list_instances):
         """Tests that runtime_jobs() forwards parameters correctly."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_job_ids = ["job1", "job2", "job3"]
         runtime_jobs_mock.return_value = mock_job_ids
 
-        result = catalog.runtime_jobs(
-            job_id="test-job-id", runtime_session="test-session"
-        )
+        result = catalog.runtime_jobs(job_id="test-job-id", runtime_session="test-session")
 
         runtime_jobs_mock.assert_called_once_with("test-job-id", "test-session")
         assert result == mock_job_ids
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "runtime_sessions")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_runtime_sessions_method(
-        self, _verify_mock, runtime_sessions_mock, mock_list_instances
-    ):
+    def test_runtime_sessions_method(self, runtime_sessions_mock, mock_file_path, mock_verify, mock_list_instances):
         """Tests that runtime_sessions() forwards job_id correctly."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_session_ids = ["session1", "session2"]
         runtime_sessions_mock.return_value = mock_session_ids
 
@@ -283,24 +200,13 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
         runtime_sessions_mock.assert_called_once_with("test-job-id")
         assert result == mock_session_ids
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "events")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_events_method(self, _verify_mock, events_mock, mock_list_instances):
+    def test_events_method(self, events_mock, mock_file_path, mock_verify, mock_list_instances):
         """Tests that events() forwards job_id and kwargs correctly."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_events = [
             JobEvent(
                 event_type="STATUS_CHANGE",
@@ -317,26 +223,13 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
         events_mock.assert_called_once_with("test-job-id", event_type="STATUS_CHANGE")
         assert result == mock_events
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "provider_jobs")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_provider_jobs_method(
-        self, _verify_mock, provider_jobs_mock, mock_list_instances
-    ):
+    def test_provider_jobs_method(self, provider_jobs_mock, mock_file_path, mock_verify, mock_list_instances):
         """Tests that provider_jobs() forwards parameters correctly."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_jobs = [Job("job1", mock.MagicMock()), Job("job2", mock.MagicMock())]
         provider_jobs_mock.return_value = mock_jobs
         test_function = QiskitFunction("test-function")
@@ -346,24 +239,13 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
         provider_jobs_mock.assert_called_once_with(test_function, limit=5, offset=10)
         assert result == mock_jobs
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "files")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_files_method(self, _verify_mock, files_mock, mock_list_instances):
+    def test_files_method(self, files_mock, mock_file_path, mock_verify, mock_list_instances):
         """Tests that files() forwards function parameter correctly."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_files = ["file1.txt", "file2.py", "file3.json"]
         files_mock.return_value = mock_files
         test_function = QiskitFunction("test-function")
@@ -373,26 +255,13 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
         files_mock.assert_called_once_with(test_function)
         assert result == mock_files
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "provider_files")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_provider_files_method(
-        self, _verify_mock, provider_files_mock, mock_list_instances
-    ):
+    def test_provider_files_method(self, provider_files_mock, mock_file_path, mock_verify, mock_list_instances):
         """Tests that provider_files() forwards function parameter correctly."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_files = ["provider_file1.txt", "provider_file2.py"]
         provider_files_mock.return_value = mock_files
         test_function = QiskitFunction("test-function")
@@ -402,26 +271,13 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
         provider_files_mock.assert_called_once_with(test_function)
         assert result == mock_files
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "file_download")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_file_download_method(
-        self, _verify_mock, file_download_mock, mock_list_instances
-    ):
+    def test_file_download_method(self, file_download_mock, mock_file_path, mock_verify, mock_list_instances):
         """Tests that file_download() forwards all parameters correctly."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         file_download_mock.return_value = None
         test_function = QiskitFunction("test-function")
 
@@ -432,31 +288,18 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
             download_location="/tmp/",
         )
 
-        file_download_mock.assert_called_once_with(
-            "test.txt", test_function, "downloaded.txt", "/tmp/"
-        )
+        file_download_mock.assert_called_once_with("test.txt", test_function, "downloaded.txt", "/tmp/")
         assert result is None
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "provider_file_download")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
     def test_provider_file_download_method(
-        self, _verify_mock, provider_file_download_mock, mock_list_instances
+        self, provider_file_download_mock, mock_file_path, mock_verify, mock_list_instances
     ):
         """Tests that provider_file_download() forwards all parameters correctly."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         provider_file_download_mock.return_value = None
         test_function = QiskitFunction("test-function")
 
@@ -475,26 +318,13 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
         )
         assert result is None
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "file_upload")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_file_upload_method(
-        self, _verify_mock, file_upload_mock, mock_list_instances
-    ):
+    def test_file_upload_method(self, file_upload_mock, mock_file_path, mock_verify, mock_list_instances):
         """Tests that file_upload() forwards parameters correctly."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         file_upload_mock.return_value = None
         test_function = QiskitFunction("test-function")
 
@@ -503,58 +333,30 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
         file_upload_mock.assert_called_once_with("upload.txt", test_function)
         assert result is None
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "provider_file_upload")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
     def test_provider_file_upload_method(
-        self, _verify_mock, provider_file_upload_mock, mock_list_instances
+        self, provider_file_upload_mock, mock_file_path, mock_verify, mock_list_instances
     ):
         """Tests that provider_file_upload() forwards parameters correctly."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         provider_file_upload_mock.return_value = None
         test_function = QiskitFunction("test-function")
 
-        result = catalog.provider_file_upload(
-            file="provider_upload.txt", function=test_function
-        )
+        result = catalog.provider_file_upload(file="provider_upload.txt", function=test_function)
 
-        provider_file_upload_mock.assert_called_once_with(
-            "provider_upload.txt", test_function
-        )
+        provider_file_upload_mock.assert_called_once_with("provider_upload.txt", test_function)
         assert result is None
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "file_delete")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_file_delete_method(
-        self, _verify_mock, file_delete_mock, mock_list_instances
-    ):
+    def test_file_delete_method(self, file_delete_mock, mock_file_path, mock_verify, mock_list_instances):
         """Tests that file_delete() forwards parameters correctly."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         file_delete_mock.return_value = None
         test_function = QiskitFunction("test-function")
 
@@ -563,55 +365,29 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
         file_delete_mock.assert_called_once_with("delete.txt", test_function)
         assert result is None
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "provider_file_delete")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
     def test_provider_file_delete_method(
-        self, _verify_mock, provider_file_delete_mock, mock_list_instances
+        self, provider_file_delete_mock, mock_file_path, mock_verify, mock_list_instances
     ):
         """Tests that provider_file_delete() forwards parameters correctly."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         provider_file_delete_mock.return_value = None
         test_function = QiskitFunction("test-function")
 
-        result = catalog.provider_file_delete(
-            file="provider_delete.txt", function=test_function
-        )
+        result = catalog.provider_file_delete(file="provider_delete.txt", function=test_function)
 
-        provider_file_delete_mock.assert_called_once_with(
-            "provider_delete.txt", test_function
-        )
+        provider_file_delete_mock.assert_called_once_with("provider_delete.txt", test_function)
         assert result is None
 
-    @mock.patch(_LIST_INSTANCES)
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_repr_method(self, _verify_mock, mock_list_instances):
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    def test_repr_method(self, mock_file_path, mock_verify, mock_list_instances):
         """Tests that __repr__() returns correct string representation."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
 
         result = repr(catalog)
 
@@ -638,26 +414,13 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
             overwrite=True,
         )
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "backends", create=True)
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_backends_method(self, _verify_mock, backends_mock, mock_list_instances):
+    def test_backends_method(self, backends_mock, mock_file_path, mock_verify, mock_list_instances):
         """Tests that backends() forwards keyword arguments correctly."""
-
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         backends_mock.return_value = ["backend1", "backend2"]
 
         result = catalog.backends(min_num_qubits=127)
@@ -665,24 +428,13 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
         backends_mock.assert_called_once_with(min_num_qubits=127)
         assert result == ["backend1", "backend2"]
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "backend", create=True)
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_backend_method(self, _verify_mock, backend_mock, mock_list_instances):
+    def test_backend_method(self, backend_mock, mock_file_path, mock_verify, mock_list_instances):
         """Tests that backend() forwards the name correctly."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         backend_mock.return_value = "backend1"
 
         result = catalog.backend("backend1")
@@ -690,26 +442,13 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
         backend_mock.assert_called_once_with("backend1")
         assert result == "backend1"
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "least_busy", create=True)
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_least_busy_method(
-        self, _verify_mock, least_busy_mock, mock_list_instances
-    ):
+    def test_least_busy_method(self, least_busy_mock, mock_file_path, mock_verify, mock_list_instances):
         """Tests that least_busy() forwards keyword arguments correctly."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         least_busy_mock.return_value = "backend1"
 
         result = catalog.least_busy(min_num_qubits=127)
@@ -717,24 +456,13 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
         least_busy_mock.assert_called_once_with(min_num_qubits=127)
         assert result == "backend1"
 
-    @mock.patch(_LIST_INSTANCES)
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "usage", create=True)
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_usage_method(self, _verify_mock, usage_mock, mock_list_instances):
+    def test_usage_method(self, usage_mock, mock_file_path, mock_verify, mock_list_instances):
         """Tests that usage() delegates to the client."""
-        # Mock list of instance crns in the IBM Cloud Global
-        mock_list_instances.return_value = [
-            {
-                "crn": "my_instance",
-                "plan": "test_plan",
-                "name": "my_instance",
-                "tags": "test_tags",
-                "pricing_type": "test_pricing_type",
-            }
-        ]
-        catalog = QiskitFunctionsCatalog(token="token", instance="instance")
+        catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         usage_mock.return_value = {"usage": 42}
 
         result = catalog.usage()

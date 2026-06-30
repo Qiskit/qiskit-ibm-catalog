@@ -81,9 +81,7 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
             instance: IBM Cloud CRN
             name: Name of the account to load
         """
-        self._client = IBMServerlessClient(
-            channel=channel, token=token, instance=instance, name=name, host=host
-        )
+        self._client = IBMServerlessClient(channel=channel, token=token, instance=instance, name=name, host=host)
 
     def upload(self, function: QiskitFunction) -> RunnableQiskitFunction:
         """Uploads qiskit function.
@@ -96,9 +94,7 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
         """
         return self._client.upload(function)
 
-    def load(
-        self, title: str, provider: Optional[str] = None
-    ) -> Optional[RunnableQiskitFunction]:
+    def load(self, title: str, provider: Optional[str] = None) -> Optional[RunnableQiskitFunction]:
         """Loads qiskit function by title.
 
         Args:
@@ -304,9 +300,7 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
         )
         return self.job(job_id=job_id)
 
-    def runtime_jobs(
-        self, job_id: str, runtime_session: Optional[str] = None
-    ) -> List[str]:
+    def runtime_jobs(self, job_id: str, runtime_session: Optional[str] = None) -> List[str]:
         """Returns list of qiskit runtime job ids associated to the serverless job id
         and optionally filtered by session.
 
@@ -351,9 +345,7 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
         download_location: str = "./",
     ):
         """Download a file available to the user for the specific Qiskit Function."""
-        return self._client.file_download(
-            file, function, target_name, download_location
-        )
+        return self._client.file_download(file, function, target_name, download_location)
 
     def provider_file_download(
         self,
