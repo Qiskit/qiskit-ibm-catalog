@@ -24,13 +24,14 @@ from __future__ import annotations
 from typing import Optional, List
 import warnings
 
+from qiskit.providers import Backend
 from qiskit_serverless import IBMServerlessClient
 from qiskit_serverless.core import Job, QiskitFunction
 from qiskit_serverless.core.function import RunnableQiskitFunction
 from qiskit_serverless.core.job_event import JobEvent
 
 
-class QiskitFunctionsCatalog:
+class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
     """
     A client for connecting to the Qiskit functions catalog.
 
@@ -368,6 +369,50 @@ class QiskitFunctionsCatalog:
     def provider_file_upload(self, file: str, function: QiskitFunction):
         """Uploads a file in the specific provider's Qiskit Function folder."""
         return self._client.provider_file_upload(file, function)
+
+    def backends(self, **kwargs) -> List[Backend]:
+        """Returns the backends accessible through the active instance.
+
+        Args:
+            **kwargs: Filtering options forwarded to the client (e.g. ``name``,
+                ``min_num_qubits``, ``filters``, ``refresh_cache``).
+
+        Returns:
+            List[Backend]: Backends matching the given criteria.
+        """
+        return self._client.backends(**kwargs)
+
+    def backend(self, name: str, **kwargs) -> Backend:
+        """Returns a single backend by name.
+
+        Args:
+            name: Name of the backend to retrieve.
+            **kwargs: Additional options forwarded to the client.
+
+        Returns:
+            Backend: The requested backend.
+        """
+        return self._client.backend(name, **kwargs)
+
+    def least_busy(self, **kwargs) -> Backend:
+        """Returns the backend with the fewest pending jobs.
+
+        Args:
+            **kwargs: Filtering options forwarded to the client (e.g.
+                ``min_num_qubits``, ``filters``).
+
+        Returns:
+            Backend: The least busy backend matching the given criteria.
+        """
+        return self._client.least_busy(**kwargs)
+
+    def usage(self) -> dict:
+        """Returns runtime usage information for the active instance.
+
+        Returns:
+            dict: Usage details for the active instance.
+        """
+        return self._client.usage()
 
     def __repr__(self) -> str:
         return "<QiskitFunctionsCatalog>"
