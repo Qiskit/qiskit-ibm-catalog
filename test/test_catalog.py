@@ -26,7 +26,9 @@ from qiskit_ibm_catalog import QiskitFunctionsCatalog
 
 _LIST_INSTANCES = "qiskit_ibm_runtime.accounts.account.CloudAccount.list_instances"
 _VERIFY_CREDS = "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-_CONFIG_FILE = "qiskit_ibm_runtime.accounts.management._DEFAULT_ACCOUNT_CONFIG_JSON_FILE"
+_CONFIG_FILE = (
+    "qiskit_ibm_runtime.accounts.management._DEFAULT_ACCOUNT_CONFIG_JSON_FILE"
+)
 
 _INSTANCE_LIST = [
     {
@@ -45,7 +47,9 @@ def _make_catalog(mock_file_path, mock_verify, mock_list_instances):
     mock_verify.return_value = None
     with tempfile.NamedTemporaryFile() as tmp:
         mock_file_path.return_value = tmp.name
-    return QiskitFunctionsCatalog(token="token", instance="my_instance", channel="ibm_quantum_platform")
+    return QiskitFunctionsCatalog(
+        token="token", instance="my_instance", channel="ibm_quantum_platform"
+    )
 
 
 class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
@@ -71,8 +75,17 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
         "functions",
         return_value=[QiskitFunction("the-ultimate-answer")],
     )
-    @mock.patch.object(IBMServerlessClient, "jobs", return_value=[Job("42", mock.MagicMock())])
-    def test_basic_functions(self, jobs_mock, functions_list_mock, mock_file_path, mock_verify, mock_list_instances):
+    @mock.patch.object(
+        IBMServerlessClient, "jobs", return_value=[Job("42", mock.MagicMock())]
+    )
+    def test_basic_functions(
+        self,
+        jobs_mock,
+        functions_list_mock,
+        mock_file_path,
+        mock_verify,
+        mock_list_instances,
+    ):
         """Tests basic function of catalog."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
 
@@ -91,8 +104,12 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_LIST_INSTANCES)
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
-    @mock.patch.object(IBMServerlessClient, "jobs", return_value=[Job("42", mock.MagicMock())])
-    def test_jobs_with_function_filter(self, jobs_mock, mock_file_path, mock_verify, mock_list_instances):
+    @mock.patch.object(
+        IBMServerlessClient, "jobs", return_value=[Job("42", mock.MagicMock())]
+    )
+    def test_jobs_with_function_filter(
+        self, jobs_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that 'function' is forwarded and 'catalog' filter is enforced."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
 
@@ -121,7 +138,9 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "function")
-    def test_load_method(self, function_mock, mock_file_path, mock_verify, mock_list_instances):
+    def test_load_method(
+        self, function_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that load() forwards parameters correctly."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_function = mock.MagicMock()
@@ -129,14 +148,18 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
 
         result = catalog.load(title="test-function", provider="test-provider")
 
-        function_mock.assert_called_once_with(title="test-function", provider="test-provider")
+        function_mock.assert_called_once_with(
+            title="test-function", provider="test-provider"
+        )
         assert result == mock_function
 
     @patch(_LIST_INSTANCES)
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "job")
-    def test_job_method(self, job_mock, mock_file_path, mock_verify, mock_list_instances):
+    def test_job_method(
+        self, job_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that job() forwards job_id correctly."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_job = Job("test-job-id", mock.MagicMock())
@@ -151,7 +174,9 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "job")
-    def test_get_job_by_id_deprecation_warning(self, job_mock, mock_file_path, mock_verify, mock_list_instances):
+    def test_get_job_by_id_deprecation_warning(
+        self, job_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that get_job_by_id() shows deprecation warning."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_job = Job("test-job-id", mock.MagicMock())
@@ -174,13 +199,17 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "runtime_jobs")
-    def test_runtime_jobs_method(self, runtime_jobs_mock, mock_file_path, mock_verify, mock_list_instances):
+    def test_runtime_jobs_method(
+        self, runtime_jobs_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that runtime_jobs() forwards parameters correctly."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_job_ids = ["job1", "job2", "job3"]
         runtime_jobs_mock.return_value = mock_job_ids
 
-        result = catalog.runtime_jobs(job_id="test-job-id", runtime_session="test-session")
+        result = catalog.runtime_jobs(
+            job_id="test-job-id", runtime_session="test-session"
+        )
 
         runtime_jobs_mock.assert_called_once_with("test-job-id", "test-session")
         assert result == mock_job_ids
@@ -189,7 +218,9 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "runtime_sessions")
-    def test_runtime_sessions_method(self, runtime_sessions_mock, mock_file_path, mock_verify, mock_list_instances):
+    def test_runtime_sessions_method(
+        self, runtime_sessions_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that runtime_sessions() forwards job_id correctly."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_session_ids = ["session1", "session2"]
@@ -204,7 +235,9 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "events")
-    def test_events_method(self, events_mock, mock_file_path, mock_verify, mock_list_instances):
+    def test_events_method(
+        self, events_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that events() forwards job_id and kwargs correctly."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_events = [
@@ -227,7 +260,9 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "provider_jobs")
-    def test_provider_jobs_method(self, provider_jobs_mock, mock_file_path, mock_verify, mock_list_instances):
+    def test_provider_jobs_method(
+        self, provider_jobs_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that provider_jobs() forwards parameters correctly."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_jobs = [Job("job1", mock.MagicMock()), Job("job2", mock.MagicMock())]
@@ -243,7 +278,9 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "files")
-    def test_files_method(self, files_mock, mock_file_path, mock_verify, mock_list_instances):
+    def test_files_method(
+        self, files_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that files() forwards function parameter correctly."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_files = ["file1.txt", "file2.py", "file3.json"]
@@ -259,7 +296,9 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "provider_files")
-    def test_provider_files_method(self, provider_files_mock, mock_file_path, mock_verify, mock_list_instances):
+    def test_provider_files_method(
+        self, provider_files_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that provider_files() forwards function parameter correctly."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         mock_files = ["provider_file1.txt", "provider_file2.py"]
@@ -275,7 +314,9 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "file_download")
-    def test_file_download_method(self, file_download_mock, mock_file_path, mock_verify, mock_list_instances):
+    def test_file_download_method(
+        self, file_download_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that file_download() forwards all parameters correctly."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         file_download_mock.return_value = None
@@ -288,7 +329,9 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
             download_location="/tmp/",
         )
 
-        file_download_mock.assert_called_once_with("test.txt", test_function, "downloaded.txt", "/tmp/")
+        file_download_mock.assert_called_once_with(
+            "test.txt", test_function, "downloaded.txt", "/tmp/"
+        )
         assert result is None
 
     @patch(_LIST_INSTANCES)
@@ -296,7 +339,11 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "provider_file_download")
     def test_provider_file_download_method(
-        self, provider_file_download_mock, mock_file_path, mock_verify, mock_list_instances
+        self,
+        provider_file_download_mock,
+        mock_file_path,
+        mock_verify,
+        mock_list_instances,
     ):
         """Tests that provider_file_download() forwards all parameters correctly."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
@@ -322,7 +369,9 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "file_upload")
-    def test_file_upload_method(self, file_upload_mock, mock_file_path, mock_verify, mock_list_instances):
+    def test_file_upload_method(
+        self, file_upload_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that file_upload() forwards parameters correctly."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         file_upload_mock.return_value = None
@@ -338,23 +387,33 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "provider_file_upload")
     def test_provider_file_upload_method(
-        self, provider_file_upload_mock, mock_file_path, mock_verify, mock_list_instances
+        self,
+        provider_file_upload_mock,
+        mock_file_path,
+        mock_verify,
+        mock_list_instances,
     ):
         """Tests that provider_file_upload() forwards parameters correctly."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         provider_file_upload_mock.return_value = None
         test_function = QiskitFunction("test-function")
 
-        result = catalog.provider_file_upload(file="provider_upload.txt", function=test_function)
+        result = catalog.provider_file_upload(
+            file="provider_upload.txt", function=test_function
+        )
 
-        provider_file_upload_mock.assert_called_once_with("provider_upload.txt", test_function)
+        provider_file_upload_mock.assert_called_once_with(
+            "provider_upload.txt", test_function
+        )
         assert result is None
 
     @patch(_LIST_INSTANCES)
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "file_delete")
-    def test_file_delete_method(self, file_delete_mock, mock_file_path, mock_verify, mock_list_instances):
+    def test_file_delete_method(
+        self, file_delete_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that file_delete() forwards parameters correctly."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         file_delete_mock.return_value = None
@@ -370,16 +429,24 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "provider_file_delete")
     def test_provider_file_delete_method(
-        self, provider_file_delete_mock, mock_file_path, mock_verify, mock_list_instances
+        self,
+        provider_file_delete_mock,
+        mock_file_path,
+        mock_verify,
+        mock_list_instances,
     ):
         """Tests that provider_file_delete() forwards parameters correctly."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         provider_file_delete_mock.return_value = None
         test_function = QiskitFunction("test-function")
 
-        result = catalog.provider_file_delete(file="provider_delete.txt", function=test_function)
+        result = catalog.provider_file_delete(
+            file="provider_delete.txt", function=test_function
+        )
 
-        provider_file_delete_mock.assert_called_once_with("provider_delete.txt", test_function)
+        provider_file_delete_mock.assert_called_once_with(
+            "provider_delete.txt", test_function
+        )
         assert result is None
 
     @patch(_LIST_INSTANCES)
@@ -418,7 +485,9 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "backends", create=True)
-    def test_backends_method(self, backends_mock, mock_file_path, mock_verify, mock_list_instances):
+    def test_backends_method(
+        self, backends_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that backends() forwards keyword arguments correctly."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         backends_mock.return_value = ["backend1", "backend2"]
@@ -432,7 +501,9 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "backend", create=True)
-    def test_backend_method(self, backend_mock, mock_file_path, mock_verify, mock_list_instances):
+    def test_backend_method(
+        self, backend_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that backend() forwards the name correctly."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         backend_mock.return_value = "backend1"
@@ -446,7 +517,9 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "least_busy", create=True)
-    def test_least_busy_method(self, least_busy_mock, mock_file_path, mock_verify, mock_list_instances):
+    def test_least_busy_method(
+        self, least_busy_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that least_busy() forwards keyword arguments correctly."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         least_busy_mock.return_value = "backend1"
@@ -460,7 +533,9 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "usage", create=True)
-    def test_usage_method(self, usage_mock, mock_file_path, mock_verify, mock_list_instances):
+    def test_usage_method(
+        self, usage_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that usage() delegates to the client."""
         catalog = _make_catalog(mock_file_path, mock_verify, mock_list_instances)
         usage_mock.return_value = {"usage": 42}
