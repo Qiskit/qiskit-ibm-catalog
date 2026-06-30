@@ -12,7 +12,11 @@
 
 """Tests for QiskitServerless class."""
 
+# pylint: disable=duplicate-code
+
+import tempfile
 from unittest import TestCase, mock
+from unittest.mock import patch
 import pytest
 
 from qiskit_serverless import IBMServerlessClient
@@ -20,25 +24,55 @@ from qiskit_serverless.core import Job, QiskitFunction
 from qiskit_serverless.core.job_event import JobEvent
 from qiskit_ibm_catalog import QiskitServerless
 
+_LIST_INSTANCES = "qiskit_ibm_runtime.accounts.account.CloudAccount.list_instances"
+_VERIFY_CREDS = "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
+_CONFIG_FILE = (
+    "qiskit_ibm_runtime.accounts.management._DEFAULT_ACCOUNT_CONFIG_JSON_FILE"
+)
 
-class TestServerless(TestCase):
+_INSTANCE_LIST = [
+    {
+        "crn": "my_instance",
+        "plan": "test_plan",
+        "name": "my_instance",
+        "tags": "test_tags",
+        "pricing_type": "test_pricing_type",
+    }
+]
+
+
+def _make_serverless(
+    mock_file_path, mock_verify, mock_list_instances, host="http://host"
+):
+    """Build a QiskitServerless suitable for unit tests."""
+    mock_list_instances.return_value = _INSTANCE_LIST
+    mock_verify.return_value = None
+    with tempfile.NamedTemporaryFile() as tmp:
+        mock_file_path.return_value = tmp.name
+    return QiskitServerless(
+        token="token", instance="my_instance", channel="ibm_quantum_platform", host=host
+    )
+
+
+class TestServerless(TestCase):  # pylint: disable=too-many-public-methods
     """TestServerless."""
 
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_authentication(self, _verify_mock):
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    def test_authentication(self, mock_file_path, mock_verify, mock_list_instances):
         """Tests authentication of serverless client."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
 
         # pylint: disable=protected-access
         assert serverless._client.token == "token"
-        assert serverless._client.instance == "instance"
+        assert serverless._client.instance == "my_instance"
         assert serverless._client.host == "http://host"
         # pylint: enable=protected-access
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(
         IBMServerlessClient,
         "functions",
@@ -47,18 +81,20 @@ class TestServerless(TestCase):
     @mock.patch.object(
         IBMServerlessClient, "jobs", return_value=[Job("42", mock.MagicMock())]
     )
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_basic_functions(self, _verify_mock, jobs_mock, functions_list_mock):
+    def test_basic_functions(
+        self,
+        jobs_mock,
+        functions_list_mock,
+        mock_file_path,
+        mock_verify,
+        mock_list_instances,
+    ):
         """Tests basic function of serverless client."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
 
         # pylint: disable=protected-access
         assert serverless._client.token == "token"
-        assert serverless._client.instance == "instance"
+        assert serverless._client.instance == "my_instance"
         assert serverless._client.host == "http://host"
         # pylint: enable=protected-access
 
@@ -74,17 +110,17 @@ class TestServerless(TestCase):
         assert len(jobs) == 1
         assert len(functions) == 1
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(
         IBMServerlessClient, "jobs", return_value=[Job("42", mock.MagicMock())]
     )
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_jobs_with_function_filter(self, _verify_mock, jobs_mock):
+    def test_jobs_with_function_filter(
+        self, jobs_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that 'function' is forwarded and 'serverless' filter is enforced."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
 
         my_function = QiskitFunction("my-func")
 
@@ -107,15 +143,15 @@ class TestServerless(TestCase):
         assert isinstance(jobs[0], Job)
         assert jobs[0].job_id == "42"
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "upload")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_upload_method(self, _verify_mock, upload_mock):
+    def test_upload_method(
+        self, upload_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that upload() forwards function parameter correctly."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
         test_function = QiskitFunction("test-function")
         mock_uploaded_function = mock.MagicMock()
         upload_mock.return_value = mock_uploaded_function
@@ -125,15 +161,15 @@ class TestServerless(TestCase):
         upload_mock.assert_called_once_with(test_function)
         assert result == mock_uploaded_function
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "function")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_load_method(self, _verify_mock, function_mock):
+    def test_load_method(
+        self, function_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that load() forwards parameters correctly."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
         mock_function = mock.MagicMock()
         function_mock.return_value = mock_function
 
@@ -144,15 +180,15 @@ class TestServerless(TestCase):
         )
         assert result == mock_function
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "job")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_job_method(self, _verify_mock, job_mock):
+    def test_job_method(
+        self, job_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that job() forwards job_id correctly."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
         mock_job = Job("test-job-id", mock.MagicMock())
         job_mock.return_value = mock_job
 
@@ -161,15 +197,15 @@ class TestServerless(TestCase):
         job_mock.assert_called_once_with(job_id="test-job-id")
         assert result == mock_job
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "job")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_get_job_by_id_deprecation_warning(self, _verify_mock, job_mock):
+    def test_get_job_by_id_deprecation_warning(
+        self, job_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that get_job_by_id() shows deprecation warning."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
         mock_job = Job("test-job-id", mock.MagicMock())
         job_mock.return_value = mock_job
 
@@ -186,15 +222,15 @@ class TestServerless(TestCase):
         job_mock.assert_called_once_with(job_id="test-job-id")
         assert result == mock_job
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "runtime_jobs")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_runtime_jobs_method(self, _verify_mock, runtime_jobs_mock):
+    def test_runtime_jobs_method(
+        self, runtime_jobs_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that runtime_jobs() forwards parameters correctly."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
         mock_job_ids = ["job1", "job2", "job3"]
         runtime_jobs_mock.return_value = mock_job_ids
 
@@ -205,15 +241,15 @@ class TestServerless(TestCase):
         runtime_jobs_mock.assert_called_once_with("test-job-id", "test-session")
         assert result == mock_job_ids
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "runtime_sessions")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_runtime_sessions_method(self, _verify_mock, runtime_sessions_mock):
+    def test_runtime_sessions_method(
+        self, runtime_sessions_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that runtime_sessions() forwards job_id correctly."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
         mock_session_ids = ["session1", "session2"]
         runtime_sessions_mock.return_value = mock_session_ids
 
@@ -222,15 +258,15 @@ class TestServerless(TestCase):
         runtime_sessions_mock.assert_called_once_with("test-job-id")
         assert result == mock_session_ids
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "events")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_events_method(self, _verify_mock, events_mock):
+    def test_events_method(
+        self, events_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that events() forwards job_id and kwargs correctly."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
         mock_events = [
             JobEvent(
                 event_type="STATUS_CHANGE",
@@ -247,15 +283,15 @@ class TestServerless(TestCase):
         events_mock.assert_called_once_with("test-job-id", event_type="STATUS_CHANGE")
         assert result == mock_events
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "provider_jobs")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_provider_jobs_method(self, _verify_mock, provider_jobs_mock):
+    def test_provider_jobs_method(
+        self, provider_jobs_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that provider_jobs() forwards parameters correctly."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
         mock_jobs = [Job("job1", mock.MagicMock()), Job("job2", mock.MagicMock())]
         provider_jobs_mock.return_value = mock_jobs
         test_function = QiskitFunction("test-function")
@@ -265,15 +301,15 @@ class TestServerless(TestCase):
         provider_jobs_mock.assert_called_once_with(test_function, limit=5, offset=10)
         assert result == mock_jobs
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "files")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_files_method(self, _verify_mock, files_mock):
+    def test_files_method(
+        self, files_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that files() forwards function parameter correctly."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
         mock_files = ["file1.txt", "file2.py", "file3.json"]
         files_mock.return_value = mock_files
         test_function = QiskitFunction("test-function")
@@ -283,15 +319,15 @@ class TestServerless(TestCase):
         files_mock.assert_called_once_with(test_function)
         assert result == mock_files
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "provider_files")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_provider_files_method(self, _verify_mock, provider_files_mock):
+    def test_provider_files_method(
+        self, provider_files_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that provider_files() forwards function parameter correctly."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
         mock_files = ["provider_file1.txt", "provider_file2.py"]
         provider_files_mock.return_value = mock_files
         test_function = QiskitFunction("test-function")
@@ -301,15 +337,15 @@ class TestServerless(TestCase):
         provider_files_mock.assert_called_once_with(test_function)
         assert result == mock_files
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "file_download")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_file_download_method(self, _verify_mock, file_download_mock):
+    def test_file_download_method(
+        self, file_download_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that file_download() forwards all parameters correctly."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
         file_download_mock.return_value = None
         test_function = QiskitFunction("test-function")
 
@@ -325,17 +361,19 @@ class TestServerless(TestCase):
         )
         assert result is None
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "provider_file_download")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
     def test_provider_file_download_method(
-        self, _verify_mock, provider_file_download_mock
+        self,
+        provider_file_download_mock,
+        mock_file_path,
+        mock_verify,
+        mock_list_instances,
     ):
         """Tests that provider_file_download() forwards all parameters correctly."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
         provider_file_download_mock.return_value = None
         test_function = QiskitFunction("test-function")
 
@@ -354,15 +392,15 @@ class TestServerless(TestCase):
         )
         assert result is None
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "file_upload")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_file_upload_method(self, _verify_mock, file_upload_mock):
+    def test_file_upload_method(
+        self, file_upload_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that file_upload() forwards parameters correctly."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
         file_upload_mock.return_value = None
         test_function = QiskitFunction("test-function")
 
@@ -371,15 +409,19 @@ class TestServerless(TestCase):
         file_upload_mock.assert_called_once_with("upload.txt", test_function)
         assert result is None
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "provider_file_upload")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_provider_file_upload_method(self, _verify_mock, provider_file_upload_mock):
+    def test_provider_file_upload_method(
+        self,
+        provider_file_upload_mock,
+        mock_file_path,
+        mock_verify,
+        mock_list_instances,
+    ):
         """Tests that provider_file_upload() forwards parameters correctly."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
         provider_file_upload_mock.return_value = None
         test_function = QiskitFunction("test-function")
 
@@ -392,15 +434,15 @@ class TestServerless(TestCase):
         )
         assert result is None
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "file_delete")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_file_delete_method(self, _verify_mock, file_delete_mock):
+    def test_file_delete_method(
+        self, file_delete_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests that file_delete() forwards parameters correctly."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
         file_delete_mock.return_value = None
         test_function = QiskitFunction("test-function")
 
@@ -409,15 +451,19 @@ class TestServerless(TestCase):
         file_delete_mock.assert_called_once_with("delete.txt", test_function)
         assert result is None
 
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "provider_file_delete")
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_provider_file_delete_method(self, _verify_mock, provider_file_delete_mock):
+    def test_provider_file_delete_method(
+        self,
+        provider_file_delete_mock,
+        mock_file_path,
+        mock_verify,
+        mock_list_instances,
+    ):
         """Tests that provider_file_delete() forwards parameters correctly."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
         provider_file_delete_mock.return_value = None
         test_function = QiskitFunction("test-function")
 
@@ -430,14 +476,12 @@ class TestServerless(TestCase):
         )
         assert result is None
 
-    @mock.patch(
-        "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
-    )
-    def test_repr_method(self, _verify_mock):
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    def test_repr_method(self, mock_file_path, mock_verify, mock_list_instances):
         """Tests that __repr__() returns correct string representation."""
-        serverless = QiskitServerless(
-            token="token", instance="instance", host="http://host"
-        )
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
 
         result = repr(serverless)
 
@@ -463,3 +507,67 @@ class TestServerless(TestCase):
             name="test-name",
             overwrite=True,
         )
+
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    @mock.patch.object(IBMServerlessClient, "backends", create=True)
+    def test_backends_method(
+        self, backends_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
+        """Tests that backends() forwards keyword arguments correctly."""
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
+        backends_mock.return_value = ["backend1", "backend2"]
+
+        result = serverless.backends(min_num_qubits=5)
+
+        backends_mock.assert_called_once_with(min_num_qubits=5)
+        assert result == ["backend1", "backend2"]
+
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    @mock.patch.object(IBMServerlessClient, "backend", create=True)
+    def test_backend_method(
+        self, backend_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
+        """Tests that backend() forwards the name correctly."""
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
+        backend_mock.return_value = "backend1"
+
+        result = serverless.backend("backend1")
+
+        backend_mock.assert_called_once_with("backend1")
+        assert result == "backend1"
+
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    @mock.patch.object(IBMServerlessClient, "least_busy", create=True)
+    def test_least_busy_method(
+        self, least_busy_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
+        """Tests that least_busy() forwards keyword arguments correctly."""
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
+        least_busy_mock.return_value = "backend1"
+
+        result = serverless.least_busy(min_num_qubits=5)
+
+        least_busy_mock.assert_called_once_with(min_num_qubits=5)
+        assert result == "backend1"
+
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    @mock.patch.object(IBMServerlessClient, "usage", create=True)
+    def test_usage_method(
+        self, usage_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
+        """Tests that usage() delegates to the client."""
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
+        usage_mock.return_value = {"usage": 42}
+
+        result = serverless.usage()
+
+        usage_mock.assert_called_once_with()
+        assert result == {"usage": 42}
