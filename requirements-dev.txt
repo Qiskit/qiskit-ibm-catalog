@@ -1,4 +1,4 @@
-coverage>=7.10.7
+coverage>=7.14.3
 pylint>=3.3.9
 nbqa>=1.9.1
 treon>=0.1.4
