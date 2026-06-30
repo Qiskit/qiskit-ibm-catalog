@@ -254,6 +254,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.providers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Backend</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_serverless</span><span class="w"> </span><span class="kn">import</span> <span class="n">IBMServerlessClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_serverless.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Job</span><span class="p">,</span> <span class="n">QiskitFunction</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_serverless.core.function</span><span class="w"> </span><span class="kn">import</span> <span class="n">RunnableQiskitFunction</span>
@@ -262,7 +263,7 @@
 
 <div class="viewcode-block" id="QiskitFunctionsCatalog">
 <a class="viewcode-back" href="../../stubs/qiskit_ibm_catalog.catalog.QiskitFunctionsCatalog.html#qiskit_ibm_catalog.catalog.QiskitFunctionsCatalog">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">QiskitFunctionsCatalog</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">QiskitFunctionsCatalog</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-many-public-methods</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A client for connecting to the Qiskit functions catalog.</span>
 
@@ -603,6 +604,50 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">provider_file_upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Uploads a file in the specific provider&#39;s Qiskit Function folder.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">provider_file_upload</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">backends</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Backend</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the backends accessible through the active instance.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            **kwargs: Filtering options forwarded to the client (e.g. ``name``,</span>
+<span class="sd">                ``min_num_qubits``, ``filters``, ``refresh_cache``).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List[Backend]: Backends matching the given criteria.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">backends</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">backend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Backend</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a single backend by name.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name: Name of the backend to retrieve.</span>
+<span class="sd">            **kwargs: Additional options forwarded to the client.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Backend: The requested backend.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">backend</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">least_busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Backend</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the backend with the fewest pending jobs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            **kwargs: Filtering options forwarded to the client (e.g.</span>
+<span class="sd">                ``min_num_qubits``, ``filters``).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Backend: The least busy backend matching the given criteria.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">least_busy</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">usage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns runtime usage information for the active instance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Usage details for the active instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">usage</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;&lt;QiskitFunctionsCatalog&gt;&quot;</span>
