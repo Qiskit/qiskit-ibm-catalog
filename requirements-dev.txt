@@ -13,5 +13,5 @@ qiskit-sphinx-theme~=2.1.0
 reno>=4.1.0
 # Black's formatting rules can change between major versions, so we use
 # the ~= specifier for it.
-black[jupyter]~=25.11
+black[jupyter]~=26.5
 requests-mock>=1.12.1
