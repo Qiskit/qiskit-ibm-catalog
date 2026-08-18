@@ -240,14 +240,14 @@
 <span class="c1"># copyright notice, and modified files need to carry a notice indicating</span>
 <span class="c1"># that they have been altered from the originals.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="sd">.. currentmodule:: qiskit_ibm_catalog.catalog</span>
 
 <span class="sd">.. autosummary::</span>
 <span class="sd">    :toctree: ../stubs/</span>
 
 <span class="sd">    QiskitFunctionsCatalog</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
@@ -264,7 +264,7 @@
 <div class="viewcode-block" id="QiskitFunctionsCatalog">
 <a class="viewcode-back" href="../../stubs/qiskit_ibm_catalog.catalog.QiskitFunctionsCatalog.html#qiskit_ibm_catalog.catalog.QiskitFunctionsCatalog">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">QiskitFunctionsCatalog</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-many-public-methods</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    A client for connecting to the Qiskit functions catalog.</span>
 
 <span class="sd">    Credentials can be saved to disk by calling the `save_account()` method::</span>
@@ -283,9 +283,9 @@
 
 <span class="sd">        from qiskit_ibm_catalog import QiskitFunctionsCatalog</span>
 <span class="sd">        catalog = QiskitFunctionsCatalog(token=&lt;INSERT_IBM_QUANTUM_TOKEN&gt;, instance=&lt;INSERT_CRN&gt;)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
 
-    <span class="n">PRE_FILTER_KEYWORD</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;catalog&quot;</span>
+    <span class="n">PRE_FILTER_KEYWORD</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"catalog"</span>
 
 <div class="viewcode-block" id="QiskitFunctionsCatalog.__init__">
 <a class="viewcode-back" href="../../stubs/qiskit_ibm_catalog.catalog.QiskitFunctionsCatalog.html#qiskit_ibm_catalog.catalog.QiskitFunctionsCatalog.__init__">[docs]</a>
@@ -296,21 +296,21 @@
         <span class="n">instance</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Initialize qiskit functions catalog.</span>
 
 <span class="sd">        If a ``token`` is used to initialize an instance, the ``name`` argument</span>
 <span class="sd">        will be ignored.</span>
 
 <span class="sd">        If only a ``name`` is provided, the token for the named account will</span>
-<span class="sd">        be retrieved from the user&#39;s local IBM Quantum account config file.</span>
+<span class="sd">        be retrieved from the user's local IBM Quantum account config file.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            channel: identifies the method to use to authenticate the user</span>
 <span class="sd">            token: IBM quantum token</span>
 <span class="sd">            instance: IBM Cloud CRN</span>
 <span class="sd">            name: Name of the account to load</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_client</span> <span class="o">=</span> <span class="n">IBMServerlessClient</span><span class="p">(</span>
             <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">instance</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span>
         <span class="p">)</span></div>
@@ -319,7 +319,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">provider</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RunnableQiskitFunction</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Loads Qiskit function by title</span>
+<span class="w">        </span><span class="sd">"""Loads Qiskit function by title</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            title (str): title of function</span>
@@ -327,7 +327,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Optional[QiskitFunction]: qiskit function</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">provider</span><span class="o">=</span><span class="n">provider</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span>
@@ -337,7 +337,7 @@
         <span class="n">offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QiskitFunction</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a list of available qiskit functions in catalog.</span>
+<span class="w">        </span><span class="sd">"""Returns a list of available qiskit functions in catalog.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            limit: Maximum number of functions to return.</span>
@@ -360,12 +360,12 @@
 <span class="sd">            # Get next page of functions:</span>
 
 <span class="sd">            functions = catalog.list(limit=10, offset=10)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">PRE_FILTER_KEYWORD</span><span class="p">}</span>
+<span class="sd">        """</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="s2">"filter"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">PRE_FILTER_KEYWORD</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;limit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"limit"</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit</span>
         <span class="k">if</span> <span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;offset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">offset</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"offset"</span><span class="p">]</span> <span class="o">=</span> <span class="n">offset</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">functions</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">jobs</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments</span>
@@ -378,20 +378,20 @@
         <span class="n">created_after</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Job</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns list of jobs from the catalog.</span>
+<span class="w">        </span><span class="sd">"""Returns list of jobs from the catalog.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            function: Filter jobs by the function that created them.</span>
 <span class="sd">            limit: Maximum number of jobs to return. Default: 10.</span>
 <span class="sd">            offset: Number of jobs to skip for pagination. Default: 0.</span>
 <span class="sd">            status: Filter by job status. Valid values:</span>
-<span class="sd">                - &quot;QUEUED&quot;: Job is waiting to run</span>
-<span class="sd">                - &quot;RUNNING&quot;: Job is currently executing</span>
-<span class="sd">                - &quot;DONE&quot;: Job completed successfully</span>
-<span class="sd">                - &quot;ERROR&quot;: Job failed with an error</span>
-<span class="sd">                - &quot;CANCELLED&quot;: Job was cancelled</span>
+<span class="sd">                - "QUEUED": Job is waiting to run</span>
+<span class="sd">                - "RUNNING": Job is currently executing</span>
+<span class="sd">                - "DONE": Job completed successfully</span>
+<span class="sd">                - "ERROR": Job failed with an error</span>
+<span class="sd">                - "CANCELLED": Job was cancelled</span>
 <span class="sd">            created_after: Filter jobs created after this timestamp.</span>
-<span class="sd">                Format: ISO 8601 (e.g., &quot;2024-01-01T00:00:00Z&quot;)</span>
+<span class="sd">                Format: ISO 8601 (e.g., "2024-01-01T00:00:00Z")</span>
 <span class="sd">            **kwargs: Additional query parameters for advanced filtering.</span>
 
 <span class="sd">        Returns:</span>
@@ -406,34 +406,34 @@
 
 <span class="sd">            # Get completed jobs:</span>
 
-<span class="sd">            jobs = catalog.jobs(status=&quot;DONE&quot;, limit=10)</span>
+<span class="sd">            jobs = catalog.jobs(status="DONE", limit=10)</span>
 
 <span class="sd">            # Get jobs from a specific function:</span>
 
-<span class="sd">            my_function = catalog.load(&quot;my-function&quot;)</span>
+<span class="sd">            my_function = catalog.load("my-function")</span>
 <span class="sd">            jobs = catalog.jobs(function=my_function, limit=20)</span>
 
 <span class="sd">            # Get jobs created after a specific date:</span>
 
 <span class="sd">            jobs = catalog.jobs(</span>
-<span class="sd">                 created_after=&quot;2024-01-01T00:00:00Z&quot;,</span>
-<span class="sd">                 status=&quot;DONE&quot;</span>
+<span class="sd">                 created_after="2024-01-01T00:00:00Z",</span>
+<span class="sd">                 status="DONE"</span>
 <span class="sd">                )</span>
 
 <span class="sd">        Note:</span>
-<span class="sd">            The &#39;filter&#39; parameter is automatically set to &quot;catalog&quot; to ensure</span>
+<span class="sd">            The 'filter' parameter is automatically set to "catalog" to ensure</span>
 <span class="sd">            only catalog jobs are returned. This cannot be overridden.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
-            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
-            <span class="s2">&quot;filter&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">PRE_FILTER_KEYWORD</span><span class="p">,</span>
+            <span class="s2">"limit"</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+            <span class="s2">"offset"</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="s2">"filter"</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">PRE_FILTER_KEYWORD</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"status"</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span>
         <span class="k">if</span> <span class="n">created_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;created_after&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">created_after</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"created_after"</span><span class="p">]</span> <span class="o">=</span> <span class="n">created_after</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">jobs</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">function</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">provider_jobs</span><span class="p">(</span>  <span class="c1"># pylint: disable=too-many-arguments</span>
@@ -446,79 +446,79 @@
         <span class="n">created_after</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Job</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;List of jobs created by the provider for this function.</span>
+<span class="w">        </span><span class="sd">"""List of jobs created by the provider for this function.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            function: Function object to filter jobs by.</span>
 <span class="sd">            limit: Maximum number of jobs to return. Default: 10.</span>
 <span class="sd">            offset: Number of jobs to skip for pagination. Default: 0.</span>
 <span class="sd">            status: Filter by job status. Valid values:</span>
-<span class="sd">                - &quot;QUEUED&quot;: Job is waiting to run</span>
-<span class="sd">                - &quot;RUNNING&quot;: Job is currently executing</span>
-<span class="sd">                - &quot;DONE&quot;: Job completed successfully</span>
-<span class="sd">                - &quot;ERROR&quot;: Job failed with an error</span>
-<span class="sd">                - &quot;CANCELLED&quot;: Job was cancelled</span>
+<span class="sd">                - "QUEUED": Job is waiting to run</span>
+<span class="sd">                - "RUNNING": Job is currently executing</span>
+<span class="sd">                - "DONE": Job completed successfully</span>
+<span class="sd">                - "ERROR": Job failed with an error</span>
+<span class="sd">                - "CANCELLED": Job was cancelled</span>
 <span class="sd">            created_after: Filter jobs created after this timestamp.</span>
-<span class="sd">                Format: ISO 8601 (e.g., &quot;2024-01-01T00:00:00Z&quot;)</span>
+<span class="sd">                Format: ISO 8601 (e.g., "2024-01-01T00:00:00Z")</span>
 <span class="sd">            **kwargs: Additional query parameters for advanced filtering.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List[Job]: List of Job objects for the specified provider and function.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            QiskitServerlessException: If the function doesn&#39;t have an associated provider.</span>
+<span class="sd">            QiskitServerlessException: If the function doesn't have an associated provider.</span>
 
 <span class="sd">        Example::</span>
 
 <span class="sd">            # Get provider jobs for a function:</span>
 
 <span class="sd">            catalog = QiskitFunctionsCatalog()</span>
-<span class="sd">            my_function = catalog.load(&quot;my-function&quot;)</span>
+<span class="sd">            my_function = catalog.load("my-function")</span>
 <span class="sd">            jobs = catalog.provider_jobs(my_function, limit=10)</span>
 
 <span class="sd">            # Get completed provider jobs:</span>
 
 <span class="sd">            jobs = catalog.provider_jobs(</span>
 <span class="sd">                my_function,</span>
-<span class="sd">                status=&quot;DONE&quot;,</span>
+<span class="sd">                status="DONE",</span>
 <span class="sd">                limit=20</span>
 <span class="sd">            )</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
-            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="s2">"limit"</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+            <span class="s2">"offset"</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"status"</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span>
         <span class="k">if</span> <span class="n">created_after</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">params</span><span class="p">[</span><span class="s2">&quot;created_after&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">created_after</span>
+            <span class="n">params</span><span class="p">[</span><span class="s2">"created_after"</span><span class="p">]</span> <span class="o">=</span> <span class="n">created_after</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">provider_jobs</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">job</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Job</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns job by id.</span>
+<span class="w">        </span><span class="sd">"""Returns job by id.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            job_id (str): job id</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Job: job</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">job</span><span class="p">(</span><span class="n">job_id</span><span class="o">=</span><span class="n">job_id</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_job_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Job</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns job by id.</span>
+<span class="w">        </span><span class="sd">"""Returns job by id.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            job_id (str): job id</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Job: job</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;`get_job_by_id` method has been deprecated. &quot;</span>
-            <span class="s2">&quot;And will be removed in future releases. &quot;</span>
-            <span class="s2">&quot;Please, use `job` instead.&quot;</span><span class="p">,</span>
+            <span class="s2">"`get_job_by_id` method has been deprecated. "</span>
+            <span class="s2">"And will be removed in future releases. "</span>
+            <span class="s2">"Please, use `job` instead."</span><span class="p">,</span>
             <span class="ne">DeprecationWarning</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">job</span><span class="p">(</span><span class="n">job_id</span><span class="o">=</span><span class="n">job_id</span><span class="p">)</span>
@@ -526,24 +526,24 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">runtime_jobs</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">runtime_session</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns list of qiskit runtime job ids associated to the catalog job id</span>
+<span class="w">        </span><span class="sd">"""Returns list of qiskit runtime job ids associated to the catalog job id</span>
 <span class="sd">        and optionally filtered by session.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List[str]: job ids</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">runtime_jobs</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">runtime_session</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">runtime_sessions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns list of qiskit runtime session ids associated to the catalog job id.</span>
+<span class="w">        </span><span class="sd">"""Returns list of qiskit runtime session ids associated to the catalog job id.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List[str]: session ids</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">runtime_sessions</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">job_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">JobEvent</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns events of the job.</span>
+<span class="w">        </span><span class="sd">"""Returns events of the job.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            job_id (str): job id</span>
@@ -551,15 +551,15 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List[JobEvent]: list of job events</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">events</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the list of files available for the user in the Qiskit Function folder.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Returns the list of files available for the user in the Qiskit Function folder."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">provider_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the list of files available for the provider in the Qiskit Function folder.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Returns the list of files available for the provider in the Qiskit Function folder."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">provider_files</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">file_download</span><span class="p">(</span>
@@ -567,9 +567,9 @@
         <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">,</span>
         <span class="n">target_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">download_location</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;./&quot;</span><span class="p">,</span>
+        <span class="n">download_location</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"./"</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Download a file available to the user for the specific Qiskit Function.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Download a file available to the user for the specific Qiskit Function."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">file_download</span><span class="p">(</span>
             <span class="n">file</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">target_name</span><span class="p">,</span> <span class="n">download_location</span>
         <span class="p">)</span>
@@ -579,9 +579,9 @@
         <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">,</span>
         <span class="n">target_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">download_location</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;./&quot;</span><span class="p">,</span>
+        <span class="n">download_location</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"./"</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Download a file available to the provider for the specific Qiskit Function.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Download a file available to the provider for the specific Qiskit Function."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">provider_file_download</span><span class="p">(</span>
             <span class="n">file</span><span class="p">,</span>
             <span class="n">function</span><span class="p">,</span>
@@ -590,23 +590,23 @@
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">file_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deletes a file available to the user for the specific Qiskit Function.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Deletes a file available to the user for the specific Qiskit Function."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">file_delete</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">provider_file_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deletes a file available to the provider for the specific Qiskit Function.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Deletes a file available to the provider for the specific Qiskit Function."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">provider_file_delete</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">file_upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Uploads a file in the specific user&#39;s Qiskit Function folder.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Uploads a file in the specific user's Qiskit Function folder."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">file_upload</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">provider_file_upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Uploads a file in the specific provider&#39;s Qiskit Function folder.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""Uploads a file in the specific provider's Qiskit Function folder."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">provider_file_upload</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">backends</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Backend</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the backends accessible through the active instance.</span>
+<span class="w">        </span><span class="sd">"""Returns the backends accessible through the active instance.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            **kwargs: Filtering options forwarded to the client (e.g. ``name``,</span>
@@ -614,11 +614,11 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            List[Backend]: Backends matching the given criteria.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">backends</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">backend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Backend</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a single backend by name.</span>
+<span class="w">        </span><span class="sd">"""Returns a single backend by name.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name: Name of the backend to retrieve.</span>
@@ -626,11 +626,11 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Backend: The requested backend.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">backend</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">least_busy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Backend</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the backend with the fewest pending jobs.</span>
+<span class="w">        </span><span class="sd">"""Returns the backend with the fewest pending jobs.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            **kwargs: Filtering options forwarded to the client (e.g.</span>
@@ -638,19 +638,19 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Backend: The least busy backend matching the given criteria.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">least_busy</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">usage</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns runtime usage information for the active instance.</span>
+<span class="w">        </span><span class="sd">"""Returns runtime usage information for the active instance.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            dict: Usage details for the active instance.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">usage</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="s2">&quot;&lt;QiskitFunctionsCatalog&gt;&quot;</span>
+        <span class="k">return</span> <span class="s2">"&lt;QiskitFunctionsCatalog&gt;"</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">save_account</span><span class="p">(</span>
@@ -660,7 +660,7 @@
         <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">overwrite</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Save the account to disk for future use.</span>
 
 <span class="sd">        Args:</span>
@@ -669,7 +669,7 @@
 <span class="sd">            instance: IBM Cloud CRN</span>
 <span class="sd">            name: Name of the account to save</span>
 <span class="sd">            overwrite: ``True`` if the existing account is to be overwritten</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        """</span>
         <span class="n">IBMServerlessClient</span><span class="o">.</span><span class="n">save_account</span><span class="p">(</span>
             <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
             <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span>
