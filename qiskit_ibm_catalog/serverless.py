@@ -136,15 +136,20 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
     def functions(
         self,
         *,
-        limit: Optional[int] = None,
-        offset: Optional[int] = None,
+        limit: int = 10,
+        offset: int = 0,
+        status: Optional[str] = None,
+        created_after: Optional[str] = None,
         **kwargs,
     ) -> List[QiskitFunction]:
         """Returns list of functions uploaded by user.
 
         Args:
-            limit: Maximum number of functions to return.
-            offset: Number of functions to skip for pagination.
+            limit: Maximum number of functions to return. Default: 10.
+            offset: Number of functions to skip for pagination. Default: 0.
+            status: Filter by function status.
+            created_after: Filter functions created after this timestamp.
+                Format: ISO 8601 (e.g., "2024-01-01T00:00:00Z")
             **kwargs: Additional query parameters for advanced filtering.
 
         Returns:
@@ -165,11 +170,11 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
 
             functions = serverless.functions(limit=10, offset=10)
         """
-        params = {**kwargs, "filter": self.PRE_FILTER_KEYWORD}
-        if limit is not None:
-            params["limit"] = limit
-        if offset is not None:
-            params["offset"] = offset
+        params = {**kwargs, "filter": self.PRE_FILTER_KEYWORD, "limit": limit, "offset": offset}
+        if status is not None:
+            params["status"] = status
+        if created_after is not None:
+            params["created_after"] = created_after
         return self._client.functions(**params)
 
     def list(

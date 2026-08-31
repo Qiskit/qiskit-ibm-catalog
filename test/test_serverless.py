@@ -105,7 +105,7 @@ class TestServerless(TestCase):  # pylint: disable=too-many-public-methods
         called_kwargs = jobs_mock.call_args.kwargs
         assert called_kwargs["filter"] == "serverless"
         assert called_kwargs["limit"] == 10
-        functions_list_mock.assert_called_with(**{"filter": "serverless"})
+        functions_list_mock.assert_called_with(**{"filter": "serverless", "limit": 10, "offset": 0})
 
         assert len(jobs) == 1
         assert len(functions) == 1
