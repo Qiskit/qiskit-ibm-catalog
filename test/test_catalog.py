@@ -70,6 +70,25 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_LIST_INSTANCES)
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
+    def test_authentication_with_custom_host(self, mock_file_path, mock_verify, mock_list_instances):
+        """Tests authentication with custom host."""
+        mock_list_instances.return_value = _INSTANCE_LIST
+        mock_verify.return_value = None
+        with tempfile.NamedTemporaryFile() as tmp:
+            mock_file_path.return_value = tmp.name
+        catalog = QiskitFunctionsCatalog(
+            token="token", instance="my_instance", channel="ibm_quantum_platform", host="http://custom-host"
+        )
+
+        # pylint: disable=protected-access
+        assert catalog._client.token == "token"
+        assert catalog._client.instance == "my_instance"
+        assert catalog._client.host == "http://custom-host"
+        # pylint: enable=protected-access
+
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
     @mock.patch.object(
         IBMServerlessClient,
         "functions",

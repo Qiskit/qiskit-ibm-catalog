@@ -61,6 +61,8 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
         channel: Optional[str] = None,
         instance: Optional[str] = None,
         name: Optional[str] = None,
+        *,
+        host: Optional[str] = None,
     ) -> None:
         """
         Initialize qiskit functions catalog.
@@ -76,9 +78,10 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
             token: IBM quantum token
             instance: IBM Cloud CRN
             name: Name of the account to load
+            host: host of gateway. Optional. It uses IBM_SERVERLESS_HOST_URL env var or IBM host
         """
         self._client = IBMServerlessClient(
-            channel=channel, token=token, instance=instance, name=name
+            channel=channel, token=token, instance=instance, name=name, host=host
         )
 
     def function(
