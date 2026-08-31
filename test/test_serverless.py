@@ -567,3 +567,45 @@ class TestServerless(TestCase):  # pylint: disable=too-many-public-methods
 
         usage_mock.assert_called_once_with()
         assert result == {"usage": 42}
+
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    @mock.patch.object(IBMServerlessClient, "dependencies_versions")
+    def test_dependencies_versions_method(
+        self, dependencies_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
+        """Tests that dependencies_versions() forwards correctly."""
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
+        mock_deps = [{"name": "qiskit", "version": "0.39.0"}]
+        dependencies_mock.return_value = mock_deps
+
+        result = serverless.dependencies_versions()
+
+        dependencies_mock.assert_called_once_with()
+        assert result == mock_deps
+
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    @mock.patch.object(IBMServerlessClient, "validate_arguments")
+    def test_validate_arguments_method(
+        self, validate_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
+        """Tests that validate_arguments() forwards parameters correctly."""
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
+        mock_response = {"valid": True}
+        validate_mock.return_value = mock_response
+
+        result = serverless.validate_arguments(
+            title="test-function",
+            arguments={"x": 1},
+            provider="test-provider"
+        )
+
+        validate_mock.assert_called_once_with(
+            title="test-function",
+            arguments={"x": 1},
+            provider="test-provider"
+        )
+        assert result == mock_response

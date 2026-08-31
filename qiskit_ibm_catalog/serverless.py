@@ -22,7 +22,7 @@
 # pylint: disable=duplicate-code
 from __future__ import annotations
 
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 import warnings
 
 from qiskit.providers import Backend
@@ -95,6 +95,37 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
             Optional[QiskitFunction]: uploaded qiskit function
         """
         return self._client.upload(function)
+
+    def dependencies_versions(self):
+        """Get the list of available dependencies and its versions for creating functions.
+
+        Returns:
+            List: Available dependencies and their versions.
+        """
+        return self._client.dependencies_versions()
+
+    def validate_arguments(
+        self,
+        title: str,
+        arguments: Optional[Dict[str, Any]] = None,
+        provider: Optional[str] = None,
+    ) -> dict:
+        """Validate arguments against a function's schema without creating a job.
+
+        Args:
+            title: function title, optionally in "provider/title" format
+            arguments: arguments dict to validate
+            provider: optional provider name
+
+        Returns:
+            dict: response from the gateway, e.g. {"valid": True}
+
+        Raises:
+            QiskitServerlessException: if arguments are invalid or function not found.
+        """
+        return self._client.validate_arguments(
+            title=title, arguments=arguments, provider=provider
+        )
 
     def function(
         self, title: str, provider: Optional[str] = None
