@@ -99,7 +99,7 @@ class TestServerless(TestCase):  # pylint: disable=too-many-public-methods
         # pylint: enable=protected-access
 
         jobs = serverless.jobs(limit=10)
-        functions = serverless.list()
+        functions = serverless.functions()
 
         jobs_mock.assert_called()
         called_kwargs = jobs_mock.call_args.kwargs
@@ -165,19 +165,40 @@ class TestServerless(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
     @mock.patch.object(IBMServerlessClient, "function")
-    def test_load_method(
+    def test_function_method(
         self, function_mock, mock_file_path, mock_verify, mock_list_instances
     ):
-        """Tests that load() forwards parameters correctly."""
+        """Tests that function() forwards parameters correctly."""
         serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
         mock_function = mock.MagicMock()
         function_mock.return_value = mock_function
 
-        result = serverless.load(title="test-function", provider="test-provider")
+        result = serverless.function(title="test-function", provider="test-provider")
 
         function_mock.assert_called_once_with(
             title="test-function", provider="test-provider"
         )
+        assert result == mock_function
+
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    @mock.patch.object(IBMServerlessClient, "function")
+    def test_load_method_deprecated(
+        self, function_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
+        """Tests that load() shows deprecation warning and forwards to function()."""
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
+        mock_function = mock.MagicMock()
+        function_mock.return_value = mock_function
+
+        with pytest.warns(DeprecationWarning) as warning_info:
+            result = serverless.load(title="test-function", provider="test-provider")
+
+        warning_message = str(warning_info[0].message)
+        assert "load" in warning_message
+        assert "deprecated" in warning_message
+        assert "function" in warning_message
         assert result == mock_function
 
     @patch(_LIST_INSTANCES)
@@ -194,31 +215,6 @@ class TestServerless(TestCase):  # pylint: disable=too-many-public-methods
 
         result = serverless.job(job_id="test-job-id")
 
-        job_mock.assert_called_once_with(job_id="test-job-id")
-        assert result == mock_job
-
-    @patch(_LIST_INSTANCES)
-    @patch(_VERIFY_CREDS)
-    @patch(_CONFIG_FILE)
-    @mock.patch.object(IBMServerlessClient, "job")
-    def test_get_job_by_id_deprecation_warning(
-        self, job_mock, mock_file_path, mock_verify, mock_list_instances
-    ):
-        """Tests that get_job_by_id() shows deprecation warning."""
-        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
-        mock_job = Job("test-job-id", mock.MagicMock())
-        job_mock.return_value = mock_job
-
-        with pytest.warns(DeprecationWarning) as warning_info:
-            result = serverless.get_job_by_id(job_id="test-job-id")
-
-        # Verify the warning message
-        warning_message = str(warning_info[0].message)
-        assert "get_job_by_id" in warning_message
-        assert "deprecated" in warning_message
-        assert "job" in warning_message
-
-        # Verify it still works
         job_mock.assert_called_once_with(job_id="test-job-id")
         assert result == mock_job
 
