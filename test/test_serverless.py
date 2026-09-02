@@ -105,7 +105,9 @@ class TestServerless(TestCase):  # pylint: disable=too-many-public-methods
         called_kwargs = jobs_mock.call_args.kwargs
         assert called_kwargs["filter"] == "serverless"
         assert called_kwargs["limit"] == 10
-        functions_list_mock.assert_called_with(**{"filter": "serverless", "limit": 10, "offset": 0})
+        functions_list_mock.assert_called_with(
+            **{"filter": "serverless", "limit": 10, "offset": 0}
+        )
 
         assert len(jobs) == 1
         assert len(functions) == 1
@@ -598,14 +600,10 @@ class TestServerless(TestCase):  # pylint: disable=too-many-public-methods
         validate_mock.return_value = mock_response
 
         result = serverless.validate_arguments(
-            title="test-function",
-            arguments={"x": 1},
-            provider="test-provider"
+            title="test-function", arguments={"x": 1}, provider="test-provider"
         )
 
         validate_mock.assert_called_once_with(
-            title="test-function",
-            arguments={"x": 1},
-            provider="test-provider"
+            title="test-function", arguments={"x": 1}, provider="test-provider"
         )
         assert result == mock_response

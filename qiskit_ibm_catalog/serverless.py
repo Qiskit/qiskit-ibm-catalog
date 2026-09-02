@@ -157,8 +157,7 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
             Optional[QiskitFunction]: qiskit function
         """
         warnings.warn(
-            "`load` method has been deprecated. "
-            "Use `function` instead.",
+            "`load` method has been deprecated. " + "Use `function` instead.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -201,7 +200,12 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
 
             functions = serverless.functions(limit=10, offset=10)
         """
-        params = {**kwargs, "filter": self.PRE_FILTER_KEYWORD, "limit": limit, "offset": offset}
+        params = {
+            **kwargs,
+            "filter": self.PRE_FILTER_KEYWORD,
+            "limit": limit,
+            "offset": offset,
+        }
         if status is not None:
             params["status"] = status
         if created_after is not None:
@@ -229,8 +233,7 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
             List[QiskitFunction]: List of functions uploaded by the user.
         """
         warnings.warn(
-            "`list` method has been deprecated. "
-            "Use `functions` instead.",
+            "`list` method has been deprecated. " + "Use `functions` instead.",
             DeprecationWarning,
             stacklevel=2,
         )

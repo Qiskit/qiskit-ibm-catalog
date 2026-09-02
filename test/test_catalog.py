@@ -70,14 +70,19 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
     @patch(_LIST_INSTANCES)
     @patch(_VERIFY_CREDS)
     @patch(_CONFIG_FILE)
-    def test_authentication_with_custom_host(self, mock_file_path, mock_verify, mock_list_instances):
+    def test_authentication_with_custom_host(
+        self, mock_file_path, mock_verify, mock_list_instances
+    ):
         """Tests authentication with custom host."""
         mock_list_instances.return_value = _INSTANCE_LIST
         mock_verify.return_value = None
         with tempfile.NamedTemporaryFile() as tmp:
             mock_file_path.return_value = tmp.name
         catalog = QiskitFunctionsCatalog(
-            token="token", instance="my_instance", channel="ibm_quantum_platform", host="http://custom-host"
+            token="token",
+            instance="my_instance",
+            channel="ibm_quantum_platform",
+            host="http://custom-host",
         )
 
         # pylint: disable=protected-access
@@ -115,7 +120,9 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
         called_kwargs = jobs_mock.call_args.kwargs
         assert called_kwargs["filter"] == "catalog"
         assert called_kwargs["limit"] == 10
-        functions_list_mock.assert_called_with(**{"filter": "catalog", "limit": 10, "offset": 0})
+        functions_list_mock.assert_called_with(
+            **{"filter": "catalog", "limit": 10, "offset": 0}
+        )
 
         assert len(jobs) == 1
         assert len(functions) == 1
