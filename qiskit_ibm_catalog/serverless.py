@@ -459,3 +459,11 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
             name=name,
             overwrite=overwrite,
         )
+
+
+#: Alias for :class:`QiskitServerless`.
+#:
+#: Introduced as the forward-looking name for the managed-workflow client.
+#: ``QiskitServerless`` remains available for backwards compatibility and refers
+#: to the same class.
+ManagedWorkflowClient = QiskitServerless

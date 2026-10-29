@@ -442,3 +442,11 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
             name=name,
             overwrite=overwrite,
         )
+
+
+#: Alias for :class:`QiskitFunctionsCatalog`.
+#:
+#: Introduced as the forward-looking name for the functions catalog client.
+#: ``QiskitFunctionsCatalog`` remains available for backwards compatibility and
+#: refers to the same class.
+FunctionsCatalog = QiskitFunctionsCatalog
