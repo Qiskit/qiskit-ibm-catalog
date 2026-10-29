@@ -26,8 +26,15 @@ from importlib_metadata import version as metadata_version, PackageNotFoundError
 
 from qiskit_serverless import QiskitFunction
 
-from .catalog import QiskitFunctionsCatalog
-from .serverless import QiskitServerless
+from .catalog import QiskitFunctionsCatalog, FunctionsCatalog
+from .serverless import QiskitServerless, ManagedWorkflowClient
+
+#: Alias for :class:`~qiskit_serverless.QiskitFunction`.
+#:
+#: Introduced as the forward-looking name for the function/workflow object.
+#: ``QiskitFunction`` remains available for backwards compatibility and refers
+#: to the same class, which is defined in ``qiskit_serverless``.
+ManagedWorkflow = QiskitFunction
 
 try:
     __version__ = metadata_version("qiskit_ibm_catalog")
