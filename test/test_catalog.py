@@ -19,12 +19,19 @@ from unittest import TestCase, mock
 from unittest.mock import patch
 import pytest
 
+from qiskit_ibm_runtime.accounts import account as _runtime_account
 from qiskit_serverless import IBMServerlessClient
 from qiskit_serverless.core import Job, QiskitFunction
 from qiskit_serverless.core.job_event import JobEvent
 from qiskit_ibm_catalog import QiskitFunctionsCatalog
 
-_LIST_INSTANCES = "qiskit_ibm_runtime.accounts.account.CloudAccount.list_instances"
+# ``CloudAccount`` was folded into the base ``Account`` class in
+# qiskit-ibm-runtime 0.51.0. Patch ``list_instances`` on whichever class the
+# installed runtime actually instantiates so the tests work on both.
+_ACCOUNT_CLS = (
+    "CloudAccount" if hasattr(_runtime_account, "CloudAccount") else "Account"
+)
+_LIST_INSTANCES = f"qiskit_ibm_runtime.accounts.account.{_ACCOUNT_CLS}.list_instances"
 _VERIFY_CREDS = "qiskit_serverless.core.clients.serverless_client.ServerlessClient._verify_credentials"
 _CONFIG_FILE = (
     "qiskit_ibm_runtime.accounts.management._DEFAULT_ACCOUNT_CONFIG_JSON_FILE"
