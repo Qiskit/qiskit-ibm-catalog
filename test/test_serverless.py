@@ -578,3 +578,86 @@ class TestServerless(TestCase):  # pylint: disable=too-many-public-methods
 
         usage_mock.assert_called_once_with()
         assert result == {"usage": 42}
+
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    @mock.patch.object(IBMServerlessClient, "dependencies_versions", create=True)
+    def test_dependencies_versions_method(
+        self, deps_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
+        """Tests that dependencies_versions() delegates to the client."""
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
+        deps_mock.return_value = ["numpy==2.1.0", "qiskit==2.0.0"]
+
+        result = serverless.dependencies_versions()
+
+        deps_mock.assert_called_once_with()
+        assert result == ["numpy==2.1.0", "qiskit==2.0.0"]
+
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    @mock.patch.object(IBMServerlessClient, "dependency_report", create=True)
+    def test_dependency_report_method(
+        self, report_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
+        """Tests that dependency_report() forwards requirements correctly."""
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
+        report_mock.return_value = ["report"]
+
+        result = serverless.dependency_report(["numpy>=2", "mypkg"])
+
+        report_mock.assert_called_once_with(["numpy>=2", "mypkg"])
+        assert result == ["report"]
+
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    @mock.patch.object(IBMServerlessClient, "add_wheels", create=True)
+    def test_add_wheels_method(
+        self, add_wheels_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
+        """Tests that add_wheels() forwards parameters correctly."""
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
+        add_wheels_mock.return_value = ["mypkg-1.0-py3-none-any.whl"]
+        test_function = QiskitFunction("test-function")
+
+        result = serverless.add_wheels(test_function, ["dist/mypkg-1.0-*.whl"])
+
+        add_wheels_mock.assert_called_once_with(test_function, ["dist/mypkg-1.0-*.whl"])
+        assert result == ["mypkg-1.0-py3-none-any.whl"]
+
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    @mock.patch.object(IBMServerlessClient, "list_wheels", create=True)
+    def test_list_wheels_method(
+        self, list_wheels_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
+        """Tests that list_wheels() forwards the function correctly."""
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
+        list_wheels_mock.return_value = ["mypkg-1.0-py3-none-any.whl"]
+        test_function = QiskitFunction("test-function")
+
+        result = serverless.list_wheels(test_function)
+
+        list_wheels_mock.assert_called_once_with(test_function)
+        assert result == ["mypkg-1.0-py3-none-any.whl"]
+
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    @mock.patch.object(IBMServerlessClient, "remove_wheels", create=True)
+    def test_remove_wheels_method(
+        self, remove_wheels_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
+        """Tests that remove_wheels() forwards parameters correctly."""
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
+        remove_wheels_mock.return_value = None
+        test_function = QiskitFunction("test-function")
+
+        result = serverless.remove_wheels(test_function, ["old.whl"])
+
+        remove_wheels_mock.assert_called_once_with(test_function, ["old.whl"])
+        assert result is None

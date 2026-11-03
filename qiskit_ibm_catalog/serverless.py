@@ -110,6 +110,34 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
         """
         return self._client.function(title=title, provider=provider)
 
+    def dependencies_versions(self) -> List[str]:
+        """Discover the dependencies (and versions) baked into the runtime image.
+
+        Read-only discovery: this reports what the runtime image already ships, so
+        you know what you do not need to bring yourself.
+
+        Returns:
+            List[str]: dependency requirement strings, e.g. ``["numpy==2.1.0", ...]``.
+        """
+        return self._client.dependencies_versions()
+
+    def dependency_report(self, requirements: List[str]):
+        """Diff your requirements against what the runtime image already ships.
+
+        For each requirement this reports whether it is already baked into the
+        image (so you should not bring it), needs to be brought as a wheel, or
+        clashes with a different baked version. It is a client-side diff over
+        :meth:`dependencies_versions`; it uploads nothing. The result prints as an
+        aligned table.
+
+        Args:
+            requirements: requirement strings, e.g. ``["numpy>=2", "mypkg", "jax<0.5"]``.
+
+        Returns:
+            A report (a list of entries) that prints as a table.
+        """
+        return self._client.dependency_report(requirements)
+
     def list(
         self,
         *,
@@ -385,6 +413,44 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
     def provider_file_upload(self, file: str, function: QiskitFunction):
         """Uploads a file in the specific provider's Qiskit Function folder."""
         return self._client.provider_file_upload(file, function)
+
+    def add_wheels(self, function: QiskitFunction, patterns: List[str]) -> List[str]:
+        """Upload locally-built wheels to a function's file area.
+
+        Each pattern is a local path or glob (e.g. ``"dist/mypkg-1.0-*.whl"``);
+        every match must be a ``.whl`` file. The wheels are uploaded into the
+        function's ``wheels`` sub-directory so they are available at runtime.
+        Install them from your entrypoint with ``install_uploaded_wheels()``, which
+        reads that same directory. Use :meth:`list_wheels` and :meth:`remove_wheels`
+        to see and remove what has been uploaded.
+
+        Args:
+            function: the function whose file area the wheels are uploaded to.
+            patterns: local paths or globs matching the wheel files to upload.
+
+        Returns:
+            List[str]: the uploaded wheel file names, in upload order.
+        """
+        return self._client.add_wheels(function, patterns)
+
+    def list_wheels(self, function: QiskitFunction) -> List[str]:
+        """List the wheels currently uploaded to a function (via :meth:`add_wheels`).
+
+        Returns:
+            List[str]: the wheel file names in the function's ``wheels`` sub-directory.
+        """
+        return self._client.list_wheels(function)
+
+    def remove_wheels(self, function: QiskitFunction, names: List[str]) -> None:
+        """Remove previously uploaded wheels from a function.
+
+        To update a wheel, remove the old one and :meth:`add_wheels` the new build.
+
+        Args:
+            function: the function to remove wheels from.
+            names: wheel file names to remove, as returned by :meth:`list_wheels`.
+        """
+        return self._client.remove_wheels(function, names)
 
     def backends(self, **kwargs) -> List[Backend]:
         """Returns the backends accessible through the active instance.
