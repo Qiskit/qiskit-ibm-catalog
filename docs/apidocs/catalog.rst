@@ -1,3 +1,7 @@
+=====================================================
+Functions catalog (:mod:`qiskit_ibm_catalog.catalog`)
+=====================================================
+
 .. automodule:: qiskit_ibm_catalog.catalog
    :no-members:
    :no-inherited-members:
