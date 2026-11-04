@@ -61,6 +61,8 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
         channel: Optional[str] = None,
         instance: Optional[str] = None,
         name: Optional[str] = None,
+        *,
+        host: Optional[str] = None,
     ) -> None:
         """
         Initialize qiskit functions catalog.
@@ -76,15 +78,16 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
             token: IBM quantum token
             instance: IBM Cloud CRN
             name: Name of the account to load
+            host: host of gateway. Optional. It uses IBM_SERVERLESS_HOST_URL env var or IBM host
         """
         self._client = IBMServerlessClient(
-            channel=channel, token=token, instance=instance, name=name
+            channel=channel, token=token, instance=instance, name=name, host=host
         )
 
-    def load(
+    def function(
         self, title: str, provider: Optional[str] = None
     ) -> Optional[RunnableQiskitFunction]:
-        """Loads Qiskit function by title
+        """Get Qiskit function by title
 
         Args:
             title (str): title of function
@@ -95,18 +98,45 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
         """
         return self._client.function(title=title, provider=provider)
 
-    def list(
+    def load(
+        self, title: str, provider: Optional[str] = None
+    ) -> Optional[RunnableQiskitFunction]:
+        """Loads Qiskit function by title
+
+        .. deprecated::
+            Use :meth:`function` instead.
+
+        Args:
+            title (str): title of function
+            provider (Optional[str], optional): provider of function. Defaults to None.
+
+        Returns:
+            Optional[QiskitFunction]: qiskit function
+        """
+        warnings.warn(
+            "`load` method has been deprecated. " + "Use `function` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.function(title=title, provider=provider)
+
+    def functions(
         self,
         *,
-        limit: Optional[int] = None,
-        offset: Optional[int] = None,
+        limit: int = 10,
+        offset: int = 0,
+        status: Optional[str] = None,
+        created_after: Optional[str] = None,
         **kwargs,
     ) -> List[QiskitFunction]:
         """Returns a list of available qiskit functions in catalog.
 
         Args:
-            limit: Maximum number of functions to return.
-            offset: Number of functions to skip for pagination.
+            limit: Maximum number of functions to return. Default: 10.
+            offset: Number of functions to skip for pagination. Default: 0.
+            status: Filter by function status.
+            created_after: Filter functions created after this timestamp.
+                Format: ISO 8601 (e.g., "2024-01-01T00:00:00Z")
             **kwargs: Additional query parameters for advanced filtering.
 
         Returns:
@@ -116,22 +146,54 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
             # Get all catalog functions:
 
             catalog = QiskitFunctionsCatalog()
-            functions = catalog.list()
+            functions = catalog.functions()
 
             # Get first 10 functions:
 
-            functions = catalog.list(limit=10)
+            functions = catalog.functions(limit=10)
 
             # Get next page of functions:
 
-            functions = catalog.list(limit=10, offset=10)
+            functions = catalog.functions(limit=10, offset=10)
         """
-        params = {**kwargs, "filter": self.PRE_FILTER_KEYWORD}
-        if limit is not None:
-            params["limit"] = limit
-        if offset is not None:
-            params["offset"] = offset
+        params = {
+            **kwargs,
+            "filter": self.PRE_FILTER_KEYWORD,
+            "limit": limit,
+            "offset": offset,
+        }
+        if status is not None:
+            params["status"] = status
+        if created_after is not None:
+            params["created_after"] = created_after
         return self._client.functions(**params)
+
+    def list(
+        self,
+        *,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+        **kwargs,
+    ) -> List[QiskitFunction]:
+        """Returns a list of available qiskit functions in catalog.
+
+        .. deprecated::
+            Use :meth:`functions` instead.
+
+        Args:
+            limit: Maximum number of functions to return.
+            offset: Number of functions to skip for pagination.
+            **kwargs: Additional query parameters for advanced filtering.
+
+        Returns:
+            List[QiskitFunction]: List of qiskit functions available in the catalog.
+        """
+        warnings.warn(
+            "`list` method has been deprecated. " + "Use `functions` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.functions(limit=limit, offset=offset, **kwargs)
 
     def jobs(  # pylint: disable=too-many-arguments
         self,
@@ -175,7 +237,7 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
 
             # Get jobs from a specific function:
 
-            my_function = catalog.load("my-function")
+            my_function = catalog.function("my-function")
             jobs = catalog.jobs(function=my_function, limit=20)
 
             # Get jobs created after a specific date:
@@ -238,7 +300,7 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
             # Get provider jobs for a function:
 
             catalog = QiskitFunctionsCatalog()
-            my_function = catalog.load("my-function")
+            my_function = catalog.function("my-function")
             jobs = catalog.provider_jobs(my_function, limit=10)
 
             # Get completed provider jobs:
@@ -270,23 +332,6 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
             Job: job
         """
         return self._client.job(job_id=job_id)
-
-    def get_job_by_id(self, job_id: str) -> Optional[Job]:
-        """Returns job by id.
-
-        Args:
-            job_id (str): job id
-
-        Returns:
-            Job: job
-        """
-        warnings.warn(
-            "`get_job_by_id` method has been deprecated. "
-            "And will be removed in future releases. "
-            "Please, use `job` instead.",
-            DeprecationWarning,
-        )
-        return self.job(job_id=job_id)
 
     def runtime_jobs(
         self, job_id: str, runtime_session: Optional[str] = None
