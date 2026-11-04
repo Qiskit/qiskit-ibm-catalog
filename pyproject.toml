@@ -14,7 +14,7 @@ dynamic = [
     "version", "dependencies"
 ]
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = "Apache-2.0"
 license-files = ["LICENSE.txt"]
 description = "Client for the IBM Quantum Platform's Qiskit Functions service"
