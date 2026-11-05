@@ -14,8 +14,13 @@
    .. autosummary::
    
       ~QiskitServerless.__init__
+      ~QiskitServerless.add_wheels
       ~QiskitServerless.backend
       ~QiskitServerless.backends
+      ~QiskitServerless.compute_profile
+      ~QiskitServerless.compute_profiles
+      ~QiskitServerless.dependencies_versions
+      ~QiskitServerless.dependency_report
       ~QiskitServerless.events
       ~QiskitServerless.file_delete
       ~QiskitServerless.file_download
@@ -26,12 +31,14 @@
       ~QiskitServerless.jobs
       ~QiskitServerless.least_busy
       ~QiskitServerless.list
+      ~QiskitServerless.list_wheels
       ~QiskitServerless.load
       ~QiskitServerless.provider_file_delete
       ~QiskitServerless.provider_file_download
       ~QiskitServerless.provider_file_upload
       ~QiskitServerless.provider_files
       ~QiskitServerless.provider_jobs
+      ~QiskitServerless.remove_wheels
       ~QiskitServerless.runtime_jobs
       ~QiskitServerless.runtime_sessions
       ~QiskitServerless.save_account
