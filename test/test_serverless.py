@@ -661,3 +661,51 @@ class TestServerless(TestCase):  # pylint: disable=too-many-public-methods
 
         remove_wheels_mock.assert_called_once_with(test_function, ["old.whl"])
         assert result is None
+
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    @mock.patch.object(IBMServerlessClient, "compute_profiles")
+    def test_compute_profiles_method(
+        self, profiles_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
+        """Tests that compute_profiles() delegates to the client."""
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
+        profiles_mock.return_value = ["24x120"]
+
+        result = serverless.compute_profiles()
+
+        profiles_mock.assert_called_once_with()
+        assert result == ["24x120"]
+
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    @mock.patch.object(IBMServerlessClient, "compute_profile")
+    def test_compute_profile_by_id_method(
+        self, profile_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
+        """Tests that compute_profile() forwards an id lookup correctly."""
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
+        profile_mock.return_value = "profile"
+
+        result = serverless.compute_profile("24x120")
+
+        profile_mock.assert_called_once_with("24x120", cpu=None, memory=None, gpu=None)
+        assert result == "profile"
+
+    @patch(_LIST_INSTANCES)
+    @patch(_VERIFY_CREDS)
+    @patch(_CONFIG_FILE)
+    @mock.patch.object(IBMServerlessClient, "compute_profile")
+    def test_compute_profile_by_resources_method(
+        self, profile_mock, mock_file_path, mock_verify, mock_list_instances
+    ):
+        """Tests that compute_profile() forwards a resource lookup correctly."""
+        serverless = _make_serverless(mock_file_path, mock_verify, mock_list_instances)
+        profile_mock.return_value = "profile"
+
+        result = serverless.compute_profile(cpu=24, memory=120, gpu="1l40s")
+
+        profile_mock.assert_called_once_with(None, cpu=24, memory=120, gpu="1l40s")
+        assert result == "profile"

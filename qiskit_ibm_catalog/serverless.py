@@ -30,6 +30,7 @@ from qiskit_serverless import IBMServerlessClient
 from qiskit_serverless.core import Job, QiskitFunction
 from qiskit_serverless.core.function import RunnableQiskitFunction
 from qiskit_serverless.core.job_event import JobEvent
+from qiskit_serverless.core.compute_profile import ComputeProfile, ComputeProfileList
 
 
 class QiskitServerless:  # pylint: disable=too-many-public-methods
@@ -137,6 +138,49 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
             A report (a list of entries) that prints as a table.
         """
         return self._client.dependency_report(requirements)
+
+    def compute_profiles(self) -> ComputeProfileList:
+        """List the compute profiles registered on this deployment.
+
+        These are the profiles a Fleets function's ``sizes_map`` can name. The
+        catalog is deployment-specific, so discover the profiles here rather than
+        hard-coding identifiers. The returned list prints as an aligned table.
+
+        Returns:
+            ComputeProfileList: the registered profiles (a list that prints as a table).
+        """
+        return self._client.compute_profiles()
+
+    def compute_profile(
+        self,
+        compute_profile_id: Optional[str] = None,
+        *,
+        cpu: Optional[int | str] = None,
+        memory: Optional[int | str] = None,
+        gpu: Optional[str] = None,
+    ) -> ComputeProfile:
+        """Get a single registered compute profile, by id or by exact resources.
+
+        Call it one of two ways:
+
+        - by id: ``serverless.compute_profile("24x120")``
+        - by resources: ``serverless.compute_profile(cpu=24, memory=120[, gpu="1l40s"])``
+          -- ``cpu`` and ``memory`` are required, ``gpu`` is optional (omitted means
+          CPU-only). Every value given must match a single registered profile exactly.
+
+        Args:
+            compute_profile_id: the profile id to look up. Mutually exclusive with the
+                resource arguments.
+            cpu: required when looking up by resources.
+            memory: required when looking up by resources.
+            gpu: optional GPU specifier when looking up by resources.
+
+        Returns:
+            ComputeProfile: the matching registered profile.
+        """
+        return self._client.compute_profile(
+            compute_profile_id, cpu=cpu, memory=memory, gpu=gpu
+        )
 
     def list(
         self,
