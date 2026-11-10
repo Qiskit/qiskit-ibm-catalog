@@ -6,24 +6,24 @@
 [![Tests](https://github.com/qiskit-community/quantum-prototype-template/actions/workflows/test_latest_versions.yml/badge.svg)](https://github.com/qiskit-community/quantum-prototype-template/actions/workflows/test_latest_versions.yml)
 [![Coverage](https://coveralls.io/repos/github/qiskit-community/quantum-prototype-template/badge.svg?branch=main)](https://coveralls.io/github/qiskit-community/quantum-prototype-template?branch=main)
 
-# Qiskit Functions Catalog IBM Client
+# IBM Quantum Functions Catalog Client
 
-Client for the IBM Quantum Platform's Qiskit Functions service.
+Client for the IBM Quantum Functions service.
 
-[Qiskit Functions](https://quantum.cloud.ibm.com/functions) are abstracted services designed to accelerate application research. They simplify and accelerate utility-scale algorithm discovery and application development, by abstracting away parts of the quantum software development workflow.
+[IBM Quantum Functions](https://quantum.cloud.ibm.com/functions) are abstracted services designed to accelerate application research. They simplify and accelerate utility-scale algorithm discovery and application development, by abstracting away parts of the quantum software development workflow.
 
-This module provides the interface to access the Qiskit Functions service on IBM Quantum Platform.
+This module provides the interface to access the IBM Quantum Functions service.
 
 ### Table of Contents
 
 ##### For Users
 
-1.  [Installation](#installation)
-2.  [Quickstart Guide](#quickstart-guide)
-3.  [Tutorials](docs/tutorials)
-4.  [File Glossary](docs/file-map-and-description.md)
-5.  [How to Give Feedback](#how-to-give-feedback)
-6.  [Contribution Guidelines](#contribution-guidelines)
+1. [Installation](#installation)
+2. [Quickstart Guide](#quickstart-guide)
+3. [Tutorials](docs/tutorials)
+4. [File Glossary](docs/file-map-and-description.md)
+5. [How to Give Feedback](#how-to-give-feedback)
+6. [Contribution Guidelines](#contribution-guidelines)
 7. [References and Acknowledgements](#references-and-acknowledgements)
 8. [License](#license)
 
@@ -44,9 +44,9 @@ pip install qiskit-ibm-catalog
 ### Quickstart guide
 
 ```python
-from qiskit_ibm_catalog import QiskitFunctionsCatalog
+from qiskit_ibm_catalog import FunctionsCatalog
 
-catalog = QiskitFunctionsCatalog(token=..., instance=...)
+catalog = FunctionsCatalog(token=..., instance=...)
 
 catalog.list()
 # [<QiskitFunction("ibm/...")>, ...]
