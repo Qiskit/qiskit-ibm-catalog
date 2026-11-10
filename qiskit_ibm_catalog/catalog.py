@@ -33,7 +33,7 @@ from qiskit_serverless.core.job_event import JobEvent
 
 class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
     """
-    A client for connecting to the Qiskit functions catalog.
+    A client for connecting to the IBM Quantum Functions Catalog.
 
     Credentials can be saved to disk by calling the `save_account()` method::
 
@@ -63,7 +63,7 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
         name: Optional[str] = None,
     ) -> None:
         """
-        Initialize qiskit functions catalog.
+        Initialize the IBM Quantum Functions Catalog client.
 
         If a ``token`` is used to initialize an instance, the ``name`` argument
         will be ignored.
@@ -84,14 +84,14 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
     def load(
         self, title: str, provider: Optional[str] = None
     ) -> Optional[RunnableQiskitFunction]:
-        """Loads Qiskit function by title
+        """Loads quantum function by title
 
         Args:
             title (str): title of function
             provider (Optional[str], optional): provider of function. Defaults to None.
 
         Returns:
-            Optional[QiskitFunction]: qiskit function
+            Optional[QiskitFunction]: quantum function
         """
         return self._client.function(title=title, provider=provider)
 
@@ -102,7 +102,7 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
         offset: Optional[int] = None,
         **kwargs,
     ) -> List[QiskitFunction]:
-        """Returns a list of available qiskit functions in catalog.
+        """Returns a list of available quantum functions in catalog.
 
         Args:
             limit: Maximum number of functions to return.
@@ -110,7 +110,7 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
             **kwargs: Additional query parameters for advanced filtering.
 
         Returns:
-            List[QiskitFunction]: List of qiskit functions available in the catalog.
+            List[QiskitFunction]: List of quantum functions available in the catalog.
 
         Example::
             # Get all catalog functions:
@@ -320,11 +320,11 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
         return self._client.events(job_id, **kwargs)
 
     def files(self, function: QiskitFunction) -> List[str]:
-        """Returns the list of files available for the user in the Qiskit Function folder."""
+        """Returns the list of files available for the user in the quantum function folder."""
         return self._client.files(function)
 
     def provider_files(self, function: QiskitFunction) -> List[str]:
-        """Returns the list of files available for the provider in the Qiskit Function folder."""
+        """Returns the list of files available for the provider in the quantum function folder."""
         return self._client.provider_files(function)
 
     def file_download(
@@ -334,7 +334,7 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
         target_name: Optional[str] = None,
         download_location: str = "./",
     ):
-        """Download a file available to the user for the specific Qiskit Function."""
+        """Download a file available to the user for the specific quantum function."""
         return self._client.file_download(
             file, function, target_name, download_location
         )
@@ -346,7 +346,7 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
         target_name: Optional[str] = None,
         download_location: str = "./",
     ):
-        """Download a file available to the provider for the specific Qiskit Function."""
+        """Download a file available to the provider for the specific quantum function."""
         return self._client.provider_file_download(
             file,
             function,
@@ -355,19 +355,19 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
         )
 
     def file_delete(self, file: str, function: QiskitFunction):
-        """Deletes a file available to the user for the specific Qiskit Function."""
+        """Deletes a file available to the user for the specific quantum function."""
         return self._client.file_delete(file, function)
 
     def provider_file_delete(self, file: str, function: QiskitFunction):
-        """Deletes a file available to the provider for the specific Qiskit Function."""
+        """Deletes a file available to the provider for the specific quantum function."""
         return self._client.provider_file_delete(file, function)
 
     def file_upload(self, file: str, function: QiskitFunction):
-        """Uploads a file in the specific user's Qiskit Function folder."""
+        """Uploads a file in the specific user's quantum function folder."""
         return self._client.file_upload(file, function)
 
     def provider_file_upload(self, file: str, function: QiskitFunction):
-        """Uploads a file in the specific provider's Qiskit Function folder."""
+        """Uploads a file in the specific provider's quantum function folder."""
         return self._client.provider_file_upload(file, function)
 
     def backends(self, **kwargs) -> List[Backend]:

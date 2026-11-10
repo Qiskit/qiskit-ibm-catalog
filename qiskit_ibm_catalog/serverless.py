@@ -87,27 +87,27 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
         )
 
     def upload(self, function: QiskitFunction) -> RunnableQiskitFunction:
-        """Uploads qiskit function.
+        """Uploads quantum function.
 
         Args:
             function (QiskitFunction): function to upload
 
         Returns:
-            QiskitFunction: uploaded qiskit function
+            QiskitFunction: uploaded quantum function
         """
         return self._client.upload(function)
 
     def load(
         self, title: str, provider: Optional[str] = None
     ) -> Optional[RunnableQiskitFunction]:
-        """Loads qiskit function by title.
+        """Loads quantum function by title.
 
         Args:
             title (str): title of function.
             provider (Optional[str], optional): Provider of function. Defaults to None.
 
         Returns:
-            Optional[QiskitFunction]: qiskit function
+            Optional[QiskitFunction]: quantum function
         """
         return self._client.function(title=title, provider=provider)
 
@@ -408,11 +408,11 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
         return self._client.events(job_id, **kwargs)
 
     def files(self, function: QiskitFunction) -> List[str]:
-        """Returns the list of files available for the user in the Qiskit Function folder."""
+        """Returns the list of files available for the user in the quantum function folder."""
         return self._client.files(function)
 
     def provider_files(self, function: QiskitFunction) -> List[str]:
-        """Returns the list of files available for the provider in the Qiskit Function folder."""
+        """Returns the list of files available for the provider in the quantum function folder."""
         return self._client.provider_files(function)
 
     def file_download(
@@ -422,7 +422,7 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
         target_name: Optional[str] = None,
         download_location: str = "./",
     ):
-        """Download a file available to the user for the specific Qiskit Function."""
+        """Download a file available to the user for the specific quantum function."""
         return self._client.file_download(
             file, function, target_name, download_location
         )
@@ -434,7 +434,7 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
         target_name: Optional[str] = None,
         download_location: str = "./",
     ):
-        """Download a file available to the provider for the specific Qiskit Function."""
+        """Download a file available to the provider for the specific quantum function."""
         return self._client.provider_file_download(
             file,
             function,
@@ -443,19 +443,19 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
         )
 
     def file_delete(self, file: str, function: QiskitFunction):
-        """Deletes a file available to the user for the specific Qiskit Function."""
+        """Deletes a file available to the user for the specific quantum function."""
         return self._client.file_delete(file, function)
 
     def provider_file_delete(self, file: str, function: QiskitFunction):
-        """Deletes a file available to the provider for the specific Qiskit Function."""
+        """Deletes a file available to the provider for the specific quantum function."""
         return self._client.provider_file_delete(file, function)
 
     def file_upload(self, file: str, function: QiskitFunction):
-        """Uploads a file in the specific user's Qiskit Function folder."""
+        """Uploads a file in the specific user's quantum function folder."""
         return self._client.file_upload(file, function)
 
     def provider_file_upload(self, file: str, function: QiskitFunction):
-        """Uploads a file in the specific provider's Qiskit Function folder."""
+        """Uploads a file in the specific provider's quantum function folder."""
         return self._client.provider_file_upload(file, function)
 
     def add_wheels(self, function: QiskitFunction, patterns: List[str]) -> List[str]:
