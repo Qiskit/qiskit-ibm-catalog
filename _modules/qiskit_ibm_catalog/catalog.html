@@ -271,7 +271,7 @@
 <a class="viewcode-back" href="../../stubs/qiskit_ibm_catalog.catalog.QiskitFunctionsCatalog.html#qiskit_ibm_catalog.catalog.QiskitFunctionsCatalog">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">QiskitFunctionsCatalog</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-many-public-methods</span>
 <span class="w">    </span><span class="sd">"""</span>
-<span class="sd">    A client for connecting to the Qiskit functions catalog.</span>
+<span class="sd">    A client for connecting to the IBM Quantum Functions Catalog.</span>
 
 <span class="sd">    Credentials can be saved to disk by calling the `save_account()` method::</span>
 
@@ -303,7 +303,7 @@
         <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Initialize qiskit functions catalog.</span>
+<span class="sd">        Initialize the IBM Quantum Functions Catalog client.</span>
 
 <span class="sd">        If a ``token`` is used to initialize an instance, the ``name`` argument</span>
 <span class="sd">        will be ignored.</span>
@@ -325,14 +325,14 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">provider</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">RunnableQiskitFunction</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Loads Qiskit function by title</span>
+<span class="w">        </span><span class="sd">"""Loads quantum function by title</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            title (str): title of function</span>
 <span class="sd">            provider (Optional[str], optional): provider of function. Defaults to None.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[QiskitFunction]: qiskit function</span>
+<span class="sd">            Optional[QiskitFunction]: quantum function</span>
 <span class="sd">        """</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">provider</span><span class="o">=</span><span class="n">provider</span><span class="p">)</span>
 
@@ -343,7 +343,7 @@
         <span class="n">offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">QiskitFunction</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Returns a list of available qiskit functions in catalog.</span>
+<span class="w">        </span><span class="sd">"""Returns a list of available quantum functions in catalog.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            limit: Maximum number of functions to return.</span>
@@ -351,7 +351,7 @@
 <span class="sd">            **kwargs: Additional query parameters for advanced filtering.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            List[QiskitFunction]: List of qiskit functions available in the catalog.</span>
+<span class="sd">            List[QiskitFunction]: List of quantum functions available in the catalog.</span>
 
 <span class="sd">        Example::</span>
 <span class="sd">            # Get all catalog functions:</span>
@@ -561,11 +561,11 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">events</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Returns the list of files available for the user in the Qiskit Function folder."""</span>
+<span class="w">        </span><span class="sd">"""Returns the list of files available for the user in the quantum function folder."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">provider_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">"""Returns the list of files available for the provider in the Qiskit Function folder."""</span>
+<span class="w">        </span><span class="sd">"""Returns the list of files available for the provider in the quantum function folder."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">provider_files</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">file_download</span><span class="p">(</span>
@@ -575,7 +575,7 @@
         <span class="n">target_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">download_location</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"./"</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Download a file available to the user for the specific Qiskit Function."""</span>
+<span class="w">        </span><span class="sd">"""Download a file available to the user for the specific quantum function."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">file_download</span><span class="p">(</span>
             <span class="n">file</span><span class="p">,</span> <span class="n">function</span><span class="p">,</span> <span class="n">target_name</span><span class="p">,</span> <span class="n">download_location</span>
         <span class="p">)</span>
@@ -587,7 +587,7 @@
         <span class="n">target_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">download_location</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"./"</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Download a file available to the provider for the specific Qiskit Function."""</span>
+<span class="w">        </span><span class="sd">"""Download a file available to the provider for the specific quantum function."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">provider_file_download</span><span class="p">(</span>
             <span class="n">file</span><span class="p">,</span>
             <span class="n">function</span><span class="p">,</span>
@@ -596,19 +596,19 @@
         <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">file_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Deletes a file available to the user for the specific Qiskit Function."""</span>
+<span class="w">        </span><span class="sd">"""Deletes a file available to the user for the specific quantum function."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">file_delete</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">provider_file_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Deletes a file available to the provider for the specific Qiskit Function."""</span>
+<span class="w">        </span><span class="sd">"""Deletes a file available to the provider for the specific quantum function."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">provider_file_delete</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">file_upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Uploads a file in the specific user's Qiskit Function folder."""</span>
+<span class="w">        </span><span class="sd">"""Uploads a file in the specific user's quantum function folder."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">file_upload</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">provider_file_upload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">function</span><span class="p">:</span> <span class="n">QiskitFunction</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Uploads a file in the specific provider's Qiskit Function folder."""</span>
+<span class="w">        </span><span class="sd">"""Uploads a file in the specific provider's quantum function folder."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_client</span><span class="o">.</span><span class="n">provider_file_upload</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">function</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">backends</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Backend</span><span class="p">]:</span>
