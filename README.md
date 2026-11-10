@@ -10,9 +10,7 @@
 
 Client for the IBM Quantum Functions service.
 
-[IBM Quantum Functions](https://quantum.cloud.ibm.com/functions) are abstracted services designed to accelerate application research. They simplify and accelerate utility-scale algorithm discovery and application development, by abstracting away parts of the quantum software development workflow.
-
-This module provides the interface to access the IBM Quantum Functions service.
+[IBM Quantum Functions](https://quantum.cloud.ibm.com/functions) are partner-built software packages that simplify and accelerate utility-scale algorithm discovery and application development, by abstracting away parts of the quantum software development workflow. In this way, quantum functions free up time normally spent hand-writing code and fine-tuning experiments.
 
 ### Table of Contents
 
