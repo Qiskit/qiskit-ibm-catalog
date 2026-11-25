@@ -415,7 +415,7 @@ class QiskitFunctionsCatalog:  # pylint: disable=too-many-public-methods
         return self._client.usage()
 
     def __repr__(self) -> str:
-        return "<QiskitFunctionsCatalog>"
+        return "<Functions Catalog Client>"
 
     @staticmethod
     def save_account(

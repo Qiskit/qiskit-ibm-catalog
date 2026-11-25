@@ -492,7 +492,7 @@ class TestServerless(TestCase):  # pylint: disable=too-many-public-methods
 
         result = repr(serverless)
 
-        assert result == "<QiskitServerless>"
+        assert result == "<Managed Workflow Client>"
 
     @mock.patch.object(IBMServerlessClient, "save_account")
     def test_save_account_static_method(self, save_account_mock):
