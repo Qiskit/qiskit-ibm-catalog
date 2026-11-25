@@ -465,7 +465,7 @@ class TestCatalog(TestCase):  # pylint: disable=too-many-public-methods
 
         result = repr(catalog)
 
-        assert result == "<QiskitFunctionsCatalog>"
+        assert result == "<catalog client>"
 
     @mock.patch.object(IBMServerlessClient, "save_account")
     def test_save_account_static_method(self, save_account_mock):

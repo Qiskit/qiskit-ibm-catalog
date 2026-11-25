@@ -541,7 +541,7 @@ class QiskitServerless:  # pylint: disable=too-many-public-methods
         return self._client.usage()
 
     def __repr__(self) -> str:
-        return "<QiskitServerless>"
+        return "<managed workflow client>"
 
     @staticmethod
     def save_account(
