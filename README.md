@@ -47,9 +47,9 @@ from qiskit_ibm_catalog import FunctionsCatalog
 catalog = FunctionsCatalog(token=..., instance=...)
 
 catalog.list()
-# [<QiskitFunction("ibm/...")>, ...]
+# [<"ibm/sample-function">, ...]
 
-function = catalog.load("ibm/...")
+function = catalog.load("ibm/sample-function")
 
 job = function.run(circuit=...)
 
